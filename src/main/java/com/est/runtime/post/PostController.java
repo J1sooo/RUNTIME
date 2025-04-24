@@ -15,19 +15,18 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("/api/articles")
-    public ResponseEntity<PostResponse> saveArticle(@RequestBody PostRequest request) {
-        Post savedArticle = postService.saveArticle(request);
+    @PostMapping("/post")
+    public ResponseEntity<PostResponse> savePost(@RequestBody PostRequest request) {
+        Post post = postService.savePost(request);
 
-        // Article -> ArticleResponse 변환 후 리턴
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(savedArticle.toDto());
+                .body(post.toDto());
     }
 
-    @GetMapping("/api/articles")
-    public ResponseEntity<List<PostResponse>> findAllArticles() {
-        List<Post> post = postService.findArticles();
+    @GetMapping("/post")
+    public ResponseEntity<List<PostResponse>> findAllPosts() {
+        List<Post> post = postService.findPosts();
 
         List<PostResponse> responseBody = post.stream()
                 .map(PostResponse::new)

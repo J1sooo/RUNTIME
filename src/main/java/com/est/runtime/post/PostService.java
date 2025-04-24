@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -13,11 +14,11 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public List<Post> findArticles(){
+    public List<Post> findPosts() {
         return postRepository.findAll();
     }
 
-    public Post saveArticle(PostRequest request) {
+    public Post savePost(PostRequest request) {
         return postRepository.save(request.toEntity());
     }
 
