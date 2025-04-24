@@ -1,5 +1,6 @@
 package com.est.runtime.post;
 
+import com.est.runtime.post.dto.PostResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,9 @@ public class Post {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public PostResponse toDto() {
+        return new PostResponse(this);
     }
 }
