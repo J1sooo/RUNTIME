@@ -10,17 +10,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddPostRequest {
+public class PostRequest {
     private String title;
     private String content;
 
     public Post toEntity() {
-        Post post = new Post();
-        post.setTitle(title);
-        post.setContent(content);
-        post.setLikes(0L);
-        post.setHidden(false);
-        return post;
+        return Post.builder()
+                .title(this.title)
+                .content(this.content)
+                .build();
     }
 
 }
