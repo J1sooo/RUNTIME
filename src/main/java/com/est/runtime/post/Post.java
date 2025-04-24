@@ -11,5 +11,10 @@ import lombok.Setter;
 @Entity
 public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
+
+    private String title;
+    private String content;
+    private Long likes;
+    private Boolean hidden;
 }
