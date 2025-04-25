@@ -2,10 +2,8 @@ package com.est.runtime.signup.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,12 +17,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/signup", "/user", "/member/save", "/h2-console/**").permitAll()
+                        .requestMatchers("/signup", "/user", "/member/save", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(auth -> auth
-                        .loginPage("/login")
                         .defaultSuccessUrl("/articles", true)
+                        .permitAll()
                 )
                 .logout(auth -> auth
                         .logoutSuccessUrl("/login")
@@ -32,8 +30,9 @@ public class WebSecurityConfig {
                         .clearAuthentication(true)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions().disable());
-
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                );// H2 콘솔용
         return httpSecurity.build();
     }
 
