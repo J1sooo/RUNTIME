@@ -17,7 +17,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup", "/user", "/member/save", "/h2-console/**").permitAll()
+                        .requestMatchers(
+                                "/signup",
+                                "/user",
+                                "/member/save",
+                                "/api/member/save",
+                                "/h2-console/**"
+                        ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(auth -> auth
@@ -32,7 +39,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.disable())
-                );// H2 콘솔용
+                );
         return httpSecurity.build();
     }
 
