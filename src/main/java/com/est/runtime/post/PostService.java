@@ -27,10 +27,10 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseEntity<PostResponse> updatePost(Long id, PostRequest request) {
+    public Post updatePost(Long id, PostRequest request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
         post.update(request.getTitle(), request.getContent());
-        return ResponseEntity.ok(new PostResponse(post));
+        return post;
     }
 }
