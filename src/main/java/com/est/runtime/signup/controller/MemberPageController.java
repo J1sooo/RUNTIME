@@ -14,6 +14,18 @@ public class MemberPageController {
 
     private final MemberService memberService;
 
+    // GET: 로그인 창 띄우기
+    @GetMapping("/login")
+    public String displayLoginForm() {
+        return "login";  // login.html
+    }
+
+    // GET: 인덱스
+    @GetMapping("/index")
+    public String displayMain() {
+        return "index";  // index.html
+    }
+
     // GET: 회원가입 폼 페이지 띄우기
     @GetMapping("/member/save")
     public String saveForm() {

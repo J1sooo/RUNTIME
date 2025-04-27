@@ -1,5 +1,13 @@
 package com.est.runtime.signup.entity;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.est.runtime.signup.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +19,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Table(name = "member_table")
-public class Member {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +53,11 @@ public class Member {
     }
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        HashSet<SimpleGrantedAuthority> hs = new HashSet<>();
+        level.getAuthorities().forEach(x -> hs.add(new SimpleGrantedAuthority(x.getAuthority().getName())));
+        return Collections.unmodifiableSet(hs);
     }
 }
