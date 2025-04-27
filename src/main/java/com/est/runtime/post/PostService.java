@@ -1,25 +1,36 @@
 package com.est.runtime.post;
 
 import com.est.runtime.post.dto.PostRequest;
-import com.est.runtime.post.dto.PostResponse;
+import com.est.runtime.post.img.Image;
+import com.est.runtime.s3.ImgUploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final ImgUploadService imgUploadService;
 
     public List<Post> findPosts() {
         return postRepository.findAll();
     }
 
-    public Post savePost(PostRequest request) {
-        return postRepository.save(request.toEntity());
+    @Transactional
+    public Post savePost(PostRequest request, List<MultipartFile> files) throws IOException {
+        Post post = request.toEntity();
+        if (files != null && !files.isEmpty()) {
+            List<Image> images = imgUploadService.uploadFiles(files, post);
+            for (Image img : images) {
+                post.addImg(img);
+            }
+        }
+        return postRepository.save(post);
     }
 
     public void deletePost(Long id) {

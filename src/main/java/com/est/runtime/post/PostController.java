@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,8 +18,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<PostResponse> savePost(@RequestBody PostRequest request) {
-        Post post = postService.savePost(request);
+    public ResponseEntity<PostResponse> savePost(@RequestPart("post") PostRequest request,
+                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
+        Post post = postService.savePost(request, files);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
