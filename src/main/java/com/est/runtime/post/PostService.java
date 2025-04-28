@@ -5,6 +5,7 @@ import com.est.runtime.post.img.Image;
 import com.est.runtime.s3.ImgUploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,10 @@ public class PostService {
             imgUploadService.uploadFiles(files, post);
         }
         return postRepository.save(post);
+    }
+
+    public Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
     }
 
     @Transactional
