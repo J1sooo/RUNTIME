@@ -44,8 +44,9 @@ public class PostController {
     }
 
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostRequest request) {
-        Post post = postService.updatePost(id, request);
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestPart("post") PostRequest request,
+                                                   @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException{
+        Post post = postService.updatePost(id, request, files);
         return ResponseEntity.ok(post.toDto());
     }
 }

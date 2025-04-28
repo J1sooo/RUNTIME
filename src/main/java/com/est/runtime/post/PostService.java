@@ -39,9 +39,15 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(Long id, PostRequest request) {
+    public Post updatePost(Long id, PostRequest request, List<MultipartFile> files) throws IOException {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        if (files != null && !files.isEmpty()) {
+            imgUploadService.deleteFile(post.getImages());
+            post.getImages().clear();
+
+            imgUploadService.uploadFiles(files, post);
+        }
         post.update(request.getTitle(), request.getContent());
         return post;
     }
