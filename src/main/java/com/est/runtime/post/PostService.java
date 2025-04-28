@@ -5,10 +5,14 @@ import com.est.runtime.post.img.Image;
 import com.est.runtime.s3.ImgUploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,8 +22,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final ImgUploadService imgUploadService;
 
-    public List<Post> findPosts() {
-        return postRepository.findAll();
+    public Page<Post> findPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     @Transactional
