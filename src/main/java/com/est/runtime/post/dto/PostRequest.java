@@ -9,16 +9,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostRequest {
     private String title;
     private String content;
 
-    public Post toEntity() {
-        return Post.builder()
-                .title(this.title)
-                .content(this.content)
-                .build();
+    public PostRequest(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
+    public Post toEntity() {
+        if (this.content == null || this.content.trim().isEmpty()) {
+            this.content = "기본 내용";  // content가 비어있으면 기본값 설정
+        }
+        return new Post(this.title, this.content);
+    }
 }
