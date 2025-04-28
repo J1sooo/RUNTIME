@@ -22,5 +22,7 @@ public class PostResponse {
         this.imgUrls = post.getImages().stream()
                 .map(Image::getImgUrl)
                 .toList();
+
     }
 }
+
