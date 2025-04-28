@@ -24,9 +24,7 @@ public class ImgUploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public List<Image> uploadFiles(List<MultipartFile> files, Post post) throws IOException {
-        List<Image> images = new ArrayList<>();
-
+    public void uploadFiles(List<MultipartFile> files, Post post) throws IOException {
         for (MultipartFile file : files) {
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
@@ -42,18 +40,18 @@ public class ImgUploadService {
             String imgUrl = String.format("https://%s.s3.amazonaws.com/%s", bucketName, fileName);
 
             Image img = new Image(fileName, imgUrl, post);
-            images.add(img);
+            post.addImg(img);
         }
-
-        return images;
     }
 
-    public void deleteFile(String fileName) {
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
+    public void deleteFile(List<Image> images) {
+        for (Image img : images) {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(img.getFileName())
+                    .build();
 
-        s3Client.deleteObject(deleteObjectRequest);
+            s3Client.deleteObject(deleteObjectRequest);
+        }
     }
 }

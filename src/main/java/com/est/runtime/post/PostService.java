@@ -25,10 +25,7 @@ public class PostService {
     public Post savePost(PostRequest request, List<MultipartFile> files) throws IOException {
         Post post = request.toEntity();
         if (files != null && !files.isEmpty()) {
-            List<Image> images = imgUploadService.uploadFiles(files, post);
-            for (Image img : images) {
-                post.addImg(img);
-            }
+            imgUploadService.uploadFiles(files, post);
         }
         return postRepository.save(post);
     }
@@ -37,10 +34,7 @@ public class PostService {
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        for (Image img : post.getImages()) {
-            String fileName = img.getFileName();
-            imgUploadService.deleteFile(fileName);
-        }
+        imgUploadService.deleteFile(post.getImages());
         postRepository.deleteById(id);
     }
 
