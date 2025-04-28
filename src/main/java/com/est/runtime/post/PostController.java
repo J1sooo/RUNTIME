@@ -3,6 +3,8 @@ package com.est.runtime.post;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +29,26 @@ public class PostController {
                 .body(post.toDto());
     }
 
+//    //@GetMapping("/post")
+//    public ResponseEntity<List<PostResponse>> findAllPosts() {
+//        List<Post> post = postService.findPosts();
+//
+//        List<PostResponse> responseBody = post.stream()
+//                .map(PostResponse::new)
+//                .toList();
+//
+//        return ResponseEntity.ok(responseBody);
+//    }
+
     @GetMapping("/post")
-    public ResponseEntity<List<PostResponse>> findAllPosts() {
-        List<Post> post = postService.findPosts();
+    public ResponseEntity<Page<PostResponse>> findAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Post> postsPage = postService.findPosts(PageRequest.of(page, size));
+        Page<PostResponse> response = postsPage.map(post -> new PostResponse(post));  // Post 객체를 PostResponse로 변환
 
-        List<PostResponse> responseBody = post.stream()
-                .map(PostResponse::new)
-                .toList();
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/post/{id}")
