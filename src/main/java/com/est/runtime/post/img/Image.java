@@ -13,13 +13,15 @@ public class Image {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String fileName;
     private String imgUrl;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Image(String imgUrl, Post post) {
+    public Image(String fileName, String imgUrl, Post post) {
+        this.fileName = fileName;
         this.imgUrl = imgUrl;
         this.post = post;
     }

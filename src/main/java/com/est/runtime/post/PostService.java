@@ -33,7 +33,14 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public void deletePost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        for (Image img : post.getImages()) {
+            String fileName = img.getFileName();
+            imgUploadService.deleteFile(fileName);
+        }
         postRepository.deleteById(id);
     }
 
