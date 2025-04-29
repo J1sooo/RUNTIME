@@ -17,7 +17,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="text-dark mb-0">RUNTIME</h2>
             <div class="d-flex align-items-center">
-                <button class="btn btn-light text-dark shadow-sm">로그인</button>
+                <button type="button" class="btn btn-nav" onclick="location.href='/login'">로그인</button>
             </div>
         </div>
     </div>
@@ -31,12 +31,13 @@
         <div class="form-group mb-4">
             <label for="nickname">닉네임</label>
             <input type="text" id="nickname" name="nickname" class="form-control" placeholder="입력" required>
+            <div id="nickname-feedback" class="mt-2" style="font-size: 14px;"></div>
         </div>
 
         <div class="form-group mb-4">
             <label for="username">이메일</label>
             <input type="email" id="username" name="username" class="form-control" placeholder="입력" required>
-            <div id="username-feedback" class="mt-2" style="font-size: 14px;"></div> <!-- 실시간 피드백 영역 -->
+            <div id="username-feedback" class="mt-2" style="font-size: 14px;"></div>
         </div>
 
         <div class="form-group mb-4">
