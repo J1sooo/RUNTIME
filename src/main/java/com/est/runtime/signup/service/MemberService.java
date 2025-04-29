@@ -1,6 +1,9 @@
 package com.est.runtime.signup.service;
 
 import com.est.runtime.signup.dto.MemberDTO;
+import com.est.runtime.signup.dto.MemberDeleteDTO;
+import com.est.runtime.signup.dto.MemberInfoUpdateDTO;
+import com.est.runtime.signup.dto.MemberUpdateResponse;
 import com.est.runtime.signup.entity.AccessAuthority;
 import com.est.runtime.signup.entity.AuthorityForLevel;
 import com.est.runtime.signup.entity.Member;
@@ -12,6 +15,10 @@ import com.est.runtime.signup.repository.UserLevelRepository;
 import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -97,4 +104,86 @@ public class MemberService implements UserDetailsService {
             return new UsernameNotFoundException(new StringBuilder().append("Provided username: \"").append(username).append("\" does not exist!").toString());
         });
     }
+
+    /* Update the account information for a registered member. */
+    public MemberUpdateResponse updateUser(MemberInfoUpdateDTO memberDto) {
+        Optional<Member> memberQuery = memberRepository.findByUsername(memberDto.getUsername());
+        if (memberQuery.isPresent()) {
+            Member memberToUpdate = memberQuery.get();
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Member currentMember) {
+                if (memberToUpdate.getUsername().equals(currentMember.getUsername()) && 
+                    passwordEncoder.matches(memberDto.getPassword(), memberToUpdate.getPassword())) {
+                    StringBuilder res = new StringBuilder("Successfully updated the account's ");
+                    if (memberDto.getNewNickname() != null && !memberDto.getNewNickname().isEmpty()) {
+                        memberToUpdate.setNickname(memberDto.getNewNickname());
+                        res.append("nickname ");
+                    }
+                    if (memberDto.getNewUsername() != null && !memberDto.getNewUsername().isEmpty()) {
+                        memberToUpdate.setUsername(memberDto.getNewUsername());
+                        res.append("username ");
+                    }
+                    if (memberDto.getNewPassword() != null && !memberDto.getNewPassword().isEmpty()) {
+                        memberToUpdate.setPassword(passwordEncoder.encode(memberDto.getNewPassword()));
+                        res.append("password ");
+                    }
+                    res.append("data.");
+                    memberToUpdate = memberRepository.save(memberToUpdate);
+                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(memberToUpdate, 
+                        SecurityContextHolder.getContext().getAuthentication().getCredentials(), 
+                        memberToUpdate.getAuthorities()));
+                    return MemberUpdateResponse.builder().statusCode(HttpStatus.OK).message(res.toString()).username(memberDto.getUsername()).build();
+                }
+                return MemberUpdateResponse.builder()
+                    .message("Update failed. Either password is incorrect or attempting to change information for an account other the current account.")
+                    .username(memberDto.getUsername())
+                    .statusCode(HttpStatus.FORBIDDEN)
+                    .build();
+            }
+            return MemberUpdateResponse.builder()
+                .message("Update failed. Authorization status not valid.")
+                .username(memberDto.getUsername())
+                .statusCode(HttpStatus.FORBIDDEN)
+                .build();
+
+        }
+        return MemberUpdateResponse.builder()
+            .message("Update failed. The account with the specified username could not be found.")
+            .username(memberDto.getUsername())
+            .statusCode(HttpStatus.NOT_FOUND)
+            .build();
+    }
+
+    public MemberUpdateResponse deleteUser(MemberDeleteDTO memberDto) {
+        Optional<Member> memberQuery = memberRepository.findByUsername(memberDto.getUsername());
+        if (memberQuery.isPresent()) {
+            Member memberToDelete = memberQuery.get();
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Member currentMember) {
+                if (memberToDelete.getUsername().equals(currentMember.getUsername()) && 
+                    passwordEncoder.matches(memberDto.getPassword(), memberToDelete.getPassword())) {
+                    memberRepository.deleteById(memberToDelete.getId());
+                    return MemberUpdateResponse.builder()
+                        .message("Delete successful")
+                        .username(memberDto.getUsername())
+                        .statusCode(HttpStatus.OK)
+                        .build();
+                }
+                return MemberUpdateResponse.builder()
+                    .message("Delete failed. Either password is incorrect or attempting to delete an account other the current account.")
+                    .username(memberDto.getUsername())
+                    .statusCode(HttpStatus.FORBIDDEN)
+                    .build();
+            }
+            return MemberUpdateResponse.builder()
+                .message("Delete failed. Authorization status not valid.")
+                .username(memberDto.getUsername())
+                .statusCode(HttpStatus.FORBIDDEN)
+                .build();
+        }
+        return MemberUpdateResponse.builder()
+            .message("Delete failed. The account with the specified username could not be found.")
+            .username(memberDto.getUsername())
+            .statusCode(HttpStatus.NOT_FOUND)
+            .build();
+    }
+
 }
