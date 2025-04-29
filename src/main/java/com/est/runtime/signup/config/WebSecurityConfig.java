@@ -25,6 +25,7 @@ public class WebSecurityConfig {
                                 "/member/save",
                                 "/api/member/save",
                                 "/api/member/check-username",
+                                "/api/member/check-nickname",
                                 "/h2-console/**",
                                 "/css/**",
                                 "/js/**" //
