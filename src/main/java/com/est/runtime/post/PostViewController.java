@@ -27,6 +27,22 @@ public class PostViewController {
         return "newArticle"; // templates/newArticle.html
     }
 
+    @PostMapping("/api/post")
+    public String createPost(@ModelAttribute PostRequest request,
+                             @RequestParam List<MultipartFile> files) throws IOException {
+        // 내용이 비어있을 경우 기본값을 설정
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            request.setContent("기본 내용");
+        }
+
+        // 게시글 생성 로직 (파일을 함께 저장)
+        postService.savePost(request, files);  // 두 개의 인수를 전달
+
+        // 이미지가 포함된 본문을 처리하기 위해 템플릿으로 전달
+        return "redirect:/api/post";  // 리다이렉트하여 다른 화면으로 이동
+    }
+
+
     @GetMapping("/api/post")
     public String showPostList(
             @RequestParam(defaultValue = "0") int page,
