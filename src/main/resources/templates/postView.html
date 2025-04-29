@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>게시글 상세</title>
+</head>
+<body>
+
+<div th:if="${post != null}">
+  <h1 th:text="${post.title}"></h1>
+  <p th:text="${post.content}"></p>
+
+  <!-- 이미지가 있을 경우에만 표시 -->
+  <div th:if="${post.images != null and post.images.size() > 0}">
+    <div th:each="image : ${post.images}">
+      <img th:src="${image.imgUrl}" alt="Post Image" style="max-width: 300px;">
+    </div>
+  </div>
+
+  <!-- 이미지가 없을 경우 표시 -->
+  <div th:if="${post.images == null or post.images.size() == 0}">
+    <p>No Images</p>
+  </div>
+</div>
+
+
+</body>
+</html>
