@@ -25,7 +25,11 @@ public class ImgUploadService {
     private String bucketName;
 
     public void uploadFiles(List<MultipartFile> files, Post post) throws IOException {
+
         for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                continue; // 빈 파일은 건너뜁니다.
+            }
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
