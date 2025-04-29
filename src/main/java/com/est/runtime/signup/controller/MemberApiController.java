@@ -29,4 +29,16 @@ public class MemberApiController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Map<String, Object>> checkNickname(@RequestParam String nickname) {
+        boolean exists = memberRepository.findByNickname(nickname).isPresent();
+
+        Map<String, Object> response = Map.of(
+                "exists", exists,
+                "message", exists ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
