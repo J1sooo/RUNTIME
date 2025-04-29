@@ -10,20 +10,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("/post")
+    @PostMapping("/api/post")
     public ResponseEntity<PostResponse> savePost(@RequestPart("post") PostRequest request,
                                                  @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
         Post post = postService.savePost(request, files);
@@ -33,18 +31,7 @@ public class PostController {
                 .body(post.toDto());
     }
 
-//    //@GetMapping("/post")
-//    public ResponseEntity<List<PostResponse>> findAllPosts() {
-//        List<Post> post = postService.findPosts();
-//
-//        List<PostResponse> responseBody = post.stream()
-//                .map(PostResponse::new)
-//                .toList();
-//
-//        return ResponseEntity.ok(responseBody);
-//    }
-
-    @GetMapping("/post")
+    @GetMapping("/api/post")
     public ResponseEntity<Page<PostResponse>> findAllPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -56,29 +43,14 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping("/posts/{id}")
-    public String viewPost(@PathVariable Long id, Model model) {
-        // Post와 이미지들을 함께 가져오는 서비스 메서드 호출
-        Post post = postService.getPostWithImages(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-
-        // 모델에 post 객체 추가
-        model.addAttribute("post", post);
-
-        // postView.html로 이동
-        return "postView";
-    }
-
-
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/api/post/{id}")
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
     }
 
-    @PutMapping("/post/{id}")
+    @PutMapping("/api/post/{id}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestPart("post") PostRequest request,
-                                                   @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException{
+                                                   @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
         Post post = postService.updatePost(id, request, files);
         return ResponseEntity.ok(post.toDto());
     }

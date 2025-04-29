@@ -28,20 +28,18 @@ public class Post {
     private String content;
 
     private Long likes = 0L;
-    private Boolean hidden = true;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
-
 
     @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
     }
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     @PrePersist
     public void onCreate() {

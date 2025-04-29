@@ -39,8 +39,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Optional<Post> getPostWithImages(Long id) {
-        return postRepository.findById(id);  // EntityGraph에 의해 이미지를 즉시 로딩
+    public Post findPost(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
     }
 
     @Transactional
