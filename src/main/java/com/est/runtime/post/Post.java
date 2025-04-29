@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +30,22 @@ public class Post {
     private Long likes = 0L;
     private Boolean hidden = true;
 
-    @OneToMany (mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
+
 
     @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public void update(String title, String content) {
@@ -49,4 +61,10 @@ public class Post {
         this.images.add(image);
         image.setPost(this);
     }
+
+    public boolean hasImages() {
+        return !this.images.isEmpty();
+    }
+
+
 }
