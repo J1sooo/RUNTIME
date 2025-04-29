@@ -1,9 +1,24 @@
 document.getElementById("postForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    let formData = new FormData(this);
+    let formData = new FormData();
+    formData.append("title", this.title.value);
+    formData.append("content", this.content.value);
 
-    fetch("/api/post", { // REST 컨트롤러의 저장 API 엔드포인트로 변경
+    const filesInput = this.files;
+    if (filesInput && filesInput.files.length > 0) {
+        for (let i = 0; i < filesInput.files.length; i++) {
+            formData.append("files", filesInput.files[i]);
+        }
+    }
+
+    const postRequest = {
+        title: this.title.value,
+        content: this.content.value
+    };
+    formData.append("post", new Blob([JSON.stringify(postRequest)], { type: 'application/json' }));
+
+    fetch("/api/post", {
         method: "POST",
         body: formData
     })
@@ -11,7 +26,7 @@ document.getElementById("postForm").addEventListener("submit", function(event) {
         .then(data => {
             if (data) {
                 alert("게시글이 성공적으로 작성되었습니다.");
-                window.location.href = "/post"; // 저장 성공 후 게시글 목록 페이지로 리다이렉트 (뷰 컨트롤러)
+                window.location.href = "/post";
             }
         })
         .catch(error => {

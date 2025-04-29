@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.swing.text.Document;
-import javax.swing.text.Element;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

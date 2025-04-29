@@ -8,9 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -19,18 +21,17 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("api/post")
-    public ResponseEntity<PostResponse> createPost(@ModelAttribute PostRequest request, // @ModelAttribute로 받음
-                                                   @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
-        // 게시글 저장
-        PostResponse postResponse = postService.savePost(request, files);
+    @PostMapping("/api/post")
+    public ResponseEntity<PostResponse> savePost(@RequestPart("post") PostRequest request,
+                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
+        Post post = postService.savePost(request, files);
 
-        // 생성된 게시글의 응답 반환
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postResponse);
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(post.toDto());
     }
 
-       @GetMapping("/api/post")
+    @GetMapping("/api/post")
     public ResponseEntity<Page<PostResponse>> findAllPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -41,7 +42,6 @@ public class PostController {
 
         return ResponseEntity.ok(response);
     }
-
 
     @DeleteMapping("/api/post/{id}")
     public void deletePost(@PathVariable Long id) {

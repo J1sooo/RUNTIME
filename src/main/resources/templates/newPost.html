@@ -85,7 +85,7 @@
                     <button type="submit" class="btn btn-dark btn-sm mr-1 mb-3 shadow-sm float-right">+ 등록</button>
                     <!-- 제목 입력란 -->
                     <div class="form-group">
-                        <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" />
+                        <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" name="title" />
                     </div>
 
                     <!-- 여러 장의 이미지를 선택할 수 있게 설정 -->
@@ -106,7 +106,7 @@
                         </div>
 
                         <!-- 텍스트 영역 -->
-                        <textarea th:field="*{content}" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요"></textarea>
+                        <textarea th:field="*{content}" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요" name="content"></textarea>
                     </div>
                 </form>
 

@@ -31,22 +31,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse savePost(PostRequest request, List<MultipartFile> files) throws IOException {
-        // 게시글 생성
-        Post post = new Post();
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-
-        // 파일 업로드 처리
+    public Post savePost(PostRequest request, List<MultipartFile> files) throws IOException {
+        Post post = request.toEntity();
         if (files != null && !files.isEmpty()) {
-            imgUploadService.uploadFiles(files, post);  // 이미지 처리
+            imgUploadService.uploadFiles(files, post);
         }
-
-        // 게시글 저장
-        post = postRepository.save(post);
-
-        // PostResponse 반환 (title과 content만 포함)
-        return new PostResponse(post.getTitle(), post.getContent());
+        return postRepository.save(post);
     }
 
     public Post findPost(Long id) {
