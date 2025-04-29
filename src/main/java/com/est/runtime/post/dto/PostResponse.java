@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -15,6 +16,7 @@ public class PostResponse {
     private String title;
     private String content;
     private List<String> imgUrls;
+    private LocalDateTime createdAt;
 
     public PostResponse(Post post) {
         this.title = post.getTitle();
@@ -22,6 +24,7 @@ public class PostResponse {
         this.imgUrls = post.getImages().stream()
                 .map(Image::getImgUrl)
                 .toList();
+        this.createdAt = post.getCreatedAt();
 
     }
 }
