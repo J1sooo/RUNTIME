@@ -37,7 +37,7 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private boolean formLogin = true; // 기본 로그인 방식 설정
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_level")
     private UserLevel level;
 
