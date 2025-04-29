@@ -98,18 +98,18 @@
                         <ul class="pagination">
                             <!-- 이전 버튼: currentPage가 1일 때 비활성화 -->
                             <li class="page-item" th:class="${currentPage == 1} ? 'disabled'">
-                                <a class="page-link" th:href="@{/api/post(page=${currentPage == 1 ? 0 : currentPage - 1})}">이전</a>
+                                <a class="page-link" th:href="@{/post(page=${currentPage == 1 ? 0 : currentPage - 1})}">이전</a>
                             </li>
 
                             <!-- 페이지 번호들: i + 1을 사용해서 페이지 번호는 1부터 시작 -->
                             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                 th:class="${i == currentPage} ? 'active'">
-                                <a class="page-link" th:href="@{/api/post(page=${i})}" th:text="${i + 1}">1</a>
+                                <a class="page-link" th:href="@{/post(page=${i})}" th:text="${i + 1}">1</a>
                             </li>
 
                             <!-- 다음 버튼: currentPage가 마지막 페이지일 때 비활성화 -->
                             <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled'">
-                                <a class="page-link" th:href="@{/api/post(page=${currentPage == totalPages - 1 ? currentPage : currentPage + 1})}">다음</a>
+                                <a class="page-link" th:href="@{/post(page=${currentPage == totalPages - 1 ? currentPage : currentPage + 1})}">다음</a>
                             </li>
                         </ul>
                     </nav>

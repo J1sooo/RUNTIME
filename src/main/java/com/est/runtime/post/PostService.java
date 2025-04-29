@@ -1,6 +1,7 @@
 package com.est.runtime.post;
 
 import com.est.runtime.post.dto.PostRequest;
+import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.s3.ImgUploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,12 +31,22 @@ public class PostService {
     }
 
     @Transactional
-    public Post savePost(PostRequest request, List<MultipartFile> files) throws IOException {
-        Post post = request.toEntity();
+    public PostResponse savePost(PostRequest request, List<MultipartFile> files) throws IOException {
+        // 게시글 생성
+        Post post = new Post();
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+
+        // 파일 업로드 처리
         if (files != null && !files.isEmpty()) {
-            imgUploadService.uploadFiles(files, post);
+            imgUploadService.uploadFiles(files, post);  // 이미지 처리
         }
-        return postRepository.save(post);
+
+        // 게시글 저장
+        post = postRepository.save(post);
+
+        // PostResponse 반환 (title과 content만 포함)
+        return new PostResponse(post.getTitle(), post.getContent());
     }
 
     public Post findPost(Long id) {

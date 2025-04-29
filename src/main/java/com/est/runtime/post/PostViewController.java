@@ -9,10 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,25 +17,9 @@ public class PostViewController {
 
     @GetMapping("/post/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("post", new PostRequest());
+        model.addAttribute("post", new PostRequest()); // "post"라는 이름으로 PostRequest 객체를 담아서 전달
         return "newPost";
     }
-
-    @PostMapping("/post")
-    public String createPost(@ModelAttribute PostRequest request,
-                             @RequestParam List<MultipartFile> files) throws IOException {
-        // 내용이 비어있을 경우 기본값을 설정
-        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
-            request.setContent("기본 내용");
-        }
-
-        // 게시글 생성 로직 (파일을 함께 저장)
-        postService.savePost(request, files);  // 두 개의 인수를 전달
-
-        // 이미지가 포함된 본문을 처리하기 위해 템플릿으로 전달
-        return "redirect:/post";  // 리다이렉트하여 다른 화면으로 이동
-    }
-
 
     @GetMapping("/post")
     public String showPostList(
@@ -56,7 +36,7 @@ public class PostViewController {
 
         return "postList";
     }
-    
+
     @GetMapping("/post/{id}")
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.findPost(id);
