@@ -25,10 +25,10 @@
     }
 
      #content {
-         min-height: 50vh; /* 최소 높이 설정 */
-         height: 50vh; /* 고정 높이 설정, 원하는 값으로 조정 */
-         resize: vertical; /* 세로로 크기 조정 가능 */
-         overflow-y: auto; /* 내용이 많으면 세로 스크롤이 생기도록 */
+         min-height: 50vh;
+         height: 50vh;
+         resize: vertical;
+         overflow-y: auto;
          padding: 10px; /* 여백 설정 */
          border: 1px solid #ccc; /* 테두리 추가 */
          border-radius: 5px; /* 둥근 모서리 */
@@ -62,7 +62,6 @@
 
     <div class="container-fluid" >
         <div class="row mt-0" >
-            <!-- 사이드바 (왼쪽) -->
             <div class="col-md-10 col-lg-3 sidebar pt-5 mt-1 pl-5 bg-white">
                 <h5><br>RUNTIME</h5><br>
                 <a href="#" class="text-dark">🏠 홈</a><br><br>
@@ -71,7 +70,6 @@
                 <a href="#" class="text-dark">🤝 크루게시판</a><br><br>
             </div>
 
-            <!-- 메인 콘텐츠 (오른쪽) -->
             <div class="col-md-8 col-lg-9 mt-1 pl-0 bg-white pt-4">
                 <div class="d-flex justify-content-between">
                     <h6 class="text-left mb-4 mt-5 fs-6 ">💬소통게시판</h6>
@@ -79,16 +77,14 @@
                 </div>
 
                 <h4 class="text-center mt-5">새 글 작성</h4>
-                <form id="postForm" th:object="${post}" action="" method="post" class="text-center col-lg-10 mx-auto mt-4" enctype="multipart/form-data">
+                <form id="postForm" th:object="${post}" class="text-center col-lg-10 mx-auto mt-4">
 
-                <!-- 등록 버튼 -->
-                    <button type="submit" class="btn btn-dark btn-sm mr-1 mb-3 shadow-sm float-right">+ 등록</button>
-                    <!-- 제목 입력란 -->
+                <button type="submit" class="btn btn-dark btn-sm mr-1 mb-3 shadow-sm float-right">+ 등록</button>
+
                     <div class="form-group">
                         <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" name="title" />
                     </div>
 
-                    <!-- 여러 장의 이미지를 선택할 수 있게 설정 -->
                     <div class="form-group text-left">
                         <label for="files" class="btn btn-dark text-left d-inline-flex align-items-center">
                             <i class="bi bi-image" style="font-size: 20px;"></i>
@@ -98,14 +94,13 @@
                     </div>
 
 
-                    <!-- 본문 입력란 -->
+
                     <div class="form-group" style="display: flex; flex-direction: column; align-items: stretch;">
-                        <!-- 이미지 미리보기 -->
+
                         <div id="imagePreview" class="image-preview-container mt-3" style="border: 1px solid #ccc; padding: 10px; width: 100%; height: 100px; overflow: auto; margin-bottom: 20px;">
-                            <!-- 선택된 이미지 미리보기 컨테이너 -->
+
                         </div>
 
-                        <!-- 텍스트 영역 -->
                         <textarea th:field="*{content}" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요" name="content"></textarea>
                     </div>
                 </form>
@@ -115,6 +110,6 @@
     </div>
 </div>
 <script src="/js/previewImage.js"></script>
-<script src="/js/fetch.js"></script>
+<script src="/js/post.js"></script>
 </body>
 </html>

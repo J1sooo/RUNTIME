@@ -54,4 +54,10 @@ public class PostController {
         Post post = postService.updatePost(id, request, files);
         return ResponseEntity.ok(post.toDto());
     }
+
+    @GetMapping("/api/post/{id}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        Post post = postService.findPost(id);
+        return ResponseEntity.ok(post.toDto());
+    }
 }
