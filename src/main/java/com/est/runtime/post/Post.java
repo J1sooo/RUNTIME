@@ -2,6 +2,7 @@ package com.est.runtime.post;
 
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.post.img.Image;
+import com.est.runtime.signup.entity.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,10 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member author;
 
     @Builder
     public Post(String title, String content) {
