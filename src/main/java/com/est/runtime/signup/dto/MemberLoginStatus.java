@@ -13,5 +13,6 @@ public class MemberLoginStatus {
     private final boolean loggedIn;
     private final String username;
     private final String nickname;
+    private final Long id;
     private final HttpStatus statusCode;
 }

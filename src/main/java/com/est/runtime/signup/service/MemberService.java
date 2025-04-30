@@ -59,6 +59,7 @@ public class MemberService implements UserDetailsService {
             return MemberLoginStatus.builder()
                 .nickname(currMember.getNickname())
                 .username(currMember.getUsername())
+                .id(currMember.getId())
                 .loggedIn(true)
                 .statusCode(HttpStatus.OK)
                 .build();
@@ -67,6 +68,7 @@ public class MemberService implements UserDetailsService {
             .nickname("")
             .username("")
             .loggedIn(false)
+            .id(-1L)
             .statusCode(HttpStatus.OK)
             .build();
     }
