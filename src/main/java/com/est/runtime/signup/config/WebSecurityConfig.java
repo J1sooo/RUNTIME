@@ -29,7 +29,8 @@ public class WebSecurityConfig {
                                 "/api/member/check-nickname",
                                 "/h2-console/**",
                                 "/css/**",
-                                "/js/**" //
+                                "/js/**",
+                                "/post"//
                         ).permitAll()
                         .requestMatchers("/post").access((authentication, context) -> {
                             if (context instanceof RequestAuthorizationContext cx) {
