@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>게시글 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap 4 CDN -->
+</head>
+<style>
+    #imagePreview img {
+        width: 400px;
+        height: 210px;
+        object-fit: contain; /* 이미지 비율을 유지하면서 크기 맞춤 */
+        border-radius: 5px;
+        margin-bottom: 10px;
+        background-color: #f0f0f0; /* 비어있는 공간을 채우기 위한 배경색 */
+    }
+    #imagePreview {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+     #content {
+         min-height: 50vh;
+         height: 50vh;
+         resize: vertical;
+         overflow-y: auto;
+         padding: 10px; /* 여백 설정 */
+         border: 1px solid #ccc; /* 테두리 추가 */
+         border-radius: 5px; /* 둥근 모서리 */
+         box-sizing: border-box; /* 테두리 포함 크기 계산 */
+     }
+
+</style>
+
+<body class="bg-light py-5 ml-5 mr-5">
+<div class="container text-dark col-lg-8" style="min-width: 400px;">
+    <div class="container-fluid bg-white text-white p-5">
+        <div class="d-flex justify-content-between">
+
+            <h2 class = "text-dark">RUNTIME</h2>
+            <div class="d-flex align-items-center">
+                <div class="text-end me-3 ml-2">
+                    <button class = "btn btn-light text-dark shadow-sm"><i class="bi bi-person"></i></button>
+                </div>
+
+                <div class="text-end me-3 ml-2">
+                    <button class = "btn btn-light text-dark shadow-sm"><i class="bi bi-envelope"></i></button>
+                </div>
+
+                <div class="text-end me-3 ml-2 mr-3">
+                    <button class = "btn btn-light text-dark shadow-sm">로그아웃</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid" >
+        <div class="row mt-0" >
+            <div class="col-md-10 col-lg-3 sidebar pt-5 mt-1 pl-5 bg-white">
+                <h5><br>RUNTIME</h5><br>
+                <a href="#" class="text-dark">🏠 홈</a><br><br>
+                <a href="#" class="text-dark">📄 공지사항</a><br><br>
+                <a href="#" class="text-dark">💬 소통게시판</a><br><br>
+                <a href="#" class="text-dark">🤝 크루게시판</a><br><br>
+            </div>
+
+            <div class="col-md-8 col-lg-9 mt-1 pl-0 bg-white pt-4">
+                <div class="d-flex justify-content-between">
+                    <h6 class="text-left mb-4 mt-5 fs-6 ">💬소통게시판</h6>
+
+                </div>
+
+                <h4 class="text-center mt-5">새 글 작성</h4>
+                <form id="postForm" th:object="${post}" class="text-center col-lg-10 mx-auto mt-4">
+
+                <button type="submit" class="btn btn-dark btn-sm mr-1 mb-3 shadow-sm float-right">+ 등록</button>
+
+                    <div class="form-group">
+                        <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" name="title" />
+                    </div>
+
+                    <div class="form-group text-left">
+                        <label for="files" class="btn btn-dark text-left d-inline-flex align-items-center">
+                            <i class="bi bi-image" style="font-size: 20px;"></i>
+                            이미지 선택
+                        </label>
+                        <input type="file" name="files" id="files" class="d-none" multiple />
+                    </div>
+
+
+
+                    <div class="form-group" style="display: flex; flex-direction: column; align-items: stretch;">
+
+                        <div id="imagePreview" class="image-preview-container mt-3" style="border: 1px solid #ccc; padding: 10px; width: 100%; height: 100px; overflow: auto; margin-bottom: 20px;">
+
+                        </div>
+
+                        <textarea th:field="*{content}" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요" name="content"></textarea>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/previewImage.js"></script>
+<script src="/js/post.js"></script>
+</body>
+</html>
