@@ -23,6 +23,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/index",
                                 "/member/save",
+                                "/api/member/login-status",
                                 "/api/member/save",
                                 "/api/member/check-username",
                                 "/api/member/check-nickname",
