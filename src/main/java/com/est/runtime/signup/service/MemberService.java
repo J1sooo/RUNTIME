@@ -3,6 +3,7 @@ package com.est.runtime.signup.service;
 import com.est.runtime.signup.dto.MemberDTO;
 import com.est.runtime.signup.dto.MemberDeleteDTO;
 import com.est.runtime.signup.dto.MemberInfoUpdateDTO;
+import com.est.runtime.signup.dto.MemberLoginStatus;
 import com.est.runtime.signup.dto.MemberUpdateResponse;
 import com.est.runtime.signup.entity.AccessAuthority;
 import com.est.runtime.signup.entity.AuthorityForLevel;
@@ -50,6 +51,24 @@ public class MemberService implements UserDetailsService {
 
         // 4. 저장
         memberRepository.save(member);
+    }
+
+    public MemberLoginStatus isLoggedIn() {
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        if (currentAuth != null && currentAuth.getPrincipal() instanceof Member currMember) {
+            return MemberLoginStatus.builder()
+                .nickname(currMember.getNickname())
+                .username(currMember.getUsername())
+                .loggedIn(true)
+                .statusCode(HttpStatus.OK)
+                .build();
+        }
+        return MemberLoginStatus.builder()
+            .nickname("")
+            .username("")
+            .loggedIn(false)
+            .statusCode(HttpStatus.OK)
+            .build();
     }
 
     /* 

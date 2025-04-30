@@ -2,6 +2,7 @@ package com.est.runtime.signup.controller;
 
 import com.est.runtime.signup.dto.MemberDeleteDTO;
 import com.est.runtime.signup.dto.MemberInfoUpdateDTO;
+import com.est.runtime.signup.dto.MemberLoginStatus;
 import com.est.runtime.signup.dto.MemberUpdateResponse;
 import com.est.runtime.signup.repository.MemberRepository;
 import com.est.runtime.signup.service.MemberService;
@@ -35,6 +36,13 @@ public class MemberApiController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/login-status")
+    public ResponseEntity<MemberLoginStatus> getLoginStatus() {
+        MemberLoginStatus ret = memberService.isLoggedIn();
+        return ResponseEntity.status(ret.getStatusCode()).body(ret);
+    }
+    
 
     @GetMapping("/check-nickname")
     public ResponseEntity<Map<String, Object>> checkNickname(@RequestParam String nickname) {
