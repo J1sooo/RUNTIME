@@ -61,9 +61,9 @@
               <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText">게시글 제목</span>
               <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
               <div>
-                <a th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
-                <button class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
-                <button class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
+                <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
+                <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
+                <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
               </div>
             </div>
 

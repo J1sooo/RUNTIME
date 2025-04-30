@@ -1,6 +1,8 @@
 package com.est.runtime.post;
 
 import com.est.runtime.post.dto.PostRequest;
+import com.est.runtime.signup.service.MemberService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostViewController {
     private final PostService postService;
+    private final MemberService memberService;
 
     @GetMapping("/post/new")
     public String showCreateForm(Model model) {
@@ -23,8 +26,8 @@ public class PostViewController {
 
     @GetMapping("/post")
     public String showPostList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "10", name = "size") int size,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -38,13 +41,15 @@ public class PostViewController {
     }
 
     @GetMapping("/post/{id}")
-    public String viewPost(@PathVariable Long id, Model model) {
+    public String viewPost(@PathVariable(name = "id") Long id, Model model) {
         Post post = postService.findPost(id);
 
         boolean hasImages = !post.getImages().isEmpty();
+        boolean isOwner = (post.getMember().getId() == memberService.isLoggedIn().getId());
 
         model.addAttribute("post", post);
         model.addAttribute("hasImages", hasImages);
+        model.addAttribute("isowner", isOwner);
 
         return "postView";
     }
