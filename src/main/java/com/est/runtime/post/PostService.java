@@ -3,6 +3,7 @@ package com.est.runtime.post;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.s3.ImgUploadService;
+import com.est.runtime.signup.entity.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,8 +32,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post savePost(PostRequest request, List<MultipartFile> files) throws IOException {
-        Post post = request.toEntity();
+    public Post savePost(PostRequest request, List<MultipartFile> files, Member author) throws IOException {
+        Post post = request.toEntity(author);
         if (files != null && !files.isEmpty()) {
             imgUploadService.uploadFiles(files, post);
         }

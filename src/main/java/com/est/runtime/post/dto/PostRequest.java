@@ -1,6 +1,7 @@
 package com.est.runtime.post.dto;
 
 import com.est.runtime.post.Post;
+import com.est.runtime.signup.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,11 @@ public class PostRequest {
         this.content = content;
     }
 
-    public Post toEntity() {
-        if (this.content == null || this.content.trim().isEmpty()) {
-            this.content = "기본 내용";  // content가 비어있으면 기본값 설정
-        }
-        return new Post(this.title, this.content);
+    public Post toEntity(Member member) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .member(member)
+                .build();
     }
 }

@@ -2,6 +2,8 @@ package com.est.runtime.post;
 
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
+import com.est.runtime.signup.entity.Member;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +26,13 @@ public class PostController {
 
     @PostMapping("/api/post")
     public ResponseEntity<PostResponse> savePost(@RequestPart("post") PostRequest request,
-                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
-        Post post = postService.savePost(request, files);
+                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                                 @AuthenticationPrincipal Member member) throws IOException {
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Post post = postService.savePost(request, files, member);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)

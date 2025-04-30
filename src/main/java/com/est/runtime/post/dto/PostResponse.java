@@ -2,6 +2,8 @@ package com.est.runtime.post.dto;
 
 import com.est.runtime.post.Post;
 import com.est.runtime.post.img.Image;
+import com.est.runtime.signup.dto.AuthorDTO;
+import com.est.runtime.signup.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,7 @@ public class PostResponse {
     private String content;
     private List<String> imgUrls;
     private LocalDateTime createdAt;
+    private AuthorDTO author;
 
     public PostResponse(Post post) {
         this.title = post.getTitle();
@@ -25,7 +28,7 @@ public class PostResponse {
                 .map(Image::getImgUrl)
                 .toList();
         this.createdAt = post.getCreatedAt();
-
+        this.author = new AuthorDTO(post.getMember());
     }
 }
 
