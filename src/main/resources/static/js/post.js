@@ -1,10 +1,28 @@
+let editor;
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    editor = new toastui.Editor({
+        el: document.querySelector("#toastEditor"),
+        height: "500px",
+        initialEditType: "wysiwyg",
+        previewStyle: "vertical",
+        hooks: {
+            addImageBlobHook: (blob, callback) => {
+
+                uploadImage(blob, callback);
+                return false;
+            }
+        }
+    });
+
     const params = new URLSearchParams(window.location.search);
     const postId = params.get("id");
     const form = document.getElementById("postForm");
     const titleInput = document.getElementById("title");
     const contentInput = document.getElementById("content");
     const filesInput = document.getElementById("files");
+    const submitBtn = document.getElementById("submitBtn");
 
     if (postId) {
         // 수정 모드
@@ -12,24 +30,28 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(post => {
                 titleInput.value = post.title;
-                contentInput.value = post.content;
+                editor.setHTML(post.content);
 
-                const submitBtn = document.querySelector("button[type='submit']");
                 submitBtn.textContent = "수정";
                 submitBtn.type = "button";
                 submitBtn.addEventListener("click", () => handleSubmit("PUT", postId));
             })
             .catch(() => alert("게시글 로딩 실패"));
     } else {
-
+        // 등록 모드
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             handleSubmit("POST");
         });
     }
-
     function handleSubmit(method, id = '') {
+        const htmlContent = editor.getHTML();
+        console.log("최종 HTML:", htmlContent);
+
+        contentInput.value = htmlContent; // 반드시 FormData 생성 전에 반영
         const formData = new FormData();
+
+        // JSON으로 포장하여 append
         formData.append("post", new Blob([JSON.stringify({
             title: titleInput.value,
             content: contentInput.value
@@ -41,11 +63,42 @@ document.addEventListener("DOMContentLoaded", () => {
             method,
             body: formData
         })
+            .then(response => {
+                if (!response.ok) throw new Error("서버 응답 오류");
+                return response.json();
+            })
             .then(() => {
                 alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
                 location.href = `/post${id ? `/${id}` : ''}`;
             })
-            .catch(() => alert("게시글 처리에 실패했습니다"));
+            .catch(err => {
+                console.error("에러 발생:", err);
+                alert("게시글 처리에 실패했습니다");
+            });
+    }
+
+    function uploadImage(blob, callback) {
+        const formData = new FormData();
+        formData.append("file", blob);
+
+        fetch('/api/image/upload', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.imageUrl) {
+
+                    callback(data.imageUrl);
+                } else {
+                    callback('');
+                }
+            })
+            .catch(() => {
+                alert('이미지 업로드 실패');
+                return;
+            });
     }
 });
 

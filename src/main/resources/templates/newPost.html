@@ -5,6 +5,7 @@
       layout:decorate="~{layout/layout}">
 
 <head>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
     <style>
         #imagePreview img {
             width: 400px;
@@ -20,6 +21,27 @@
             flex-wrap: wrap;
             justify-content: flex-start;
             gap: 10px;
+        }
+
+        #content {
+            min-height: 50vh;
+            height: 50vh;
+            resize: vertical;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .card-text img, .toastui-editor-contents img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            padding: 0;
+            text-align: left;
         }
 
     </style>
@@ -46,33 +68,31 @@
                 <h4 class="text-center mt-5">새 글 작성</h4>
 
                 <form id="postForm" th:object="${post}" class="mt-4">
-                    <button type="submit" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">+ 등록</button>
+                    <button id="submitBtn" type="submit" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">+ 등록</button>
 
                     <div class="form-group">
                         <input type="text" id="title" th:field="*{title}" class="form-control"
                                placeholder="제목을 입력하세요" name="title"/>
                     </div>
 
-                    <div class="form-group text-left">
+                    <div class="form-group text-left d-none">
                         <label for="files" class="btn btn-dark d-inline-flex align-items-center">
-                            <i class="bi bi-image" style="font-size: 20px;"></i>
-                            이미지 선택
+
                         </label>
-                        <input type="file" name="files" id="files" class="d-none" multiple/>
+                        <input type="file" name="files" id="files" style="display: none;" multiple />
                     </div>
 
-                    <div class="form-group d-flex flex-column align-items-stretch">
-                        <div id="imagePreview" class="image-preview-container mt-3"
-                             style="border: 1px solid #ccc; padding: 10px; width: 100%; height: 100px; overflow: auto; margin-bottom: 20px;">
-                        </div>
-                        <textarea th:field="*{content}" class="form-control mb-5" rows="14"
-                                  placeholder="내용을 입력하세요" name="content"></textarea>
+                    <div class="form-group" style="display: flex; flex-direction: column; align-items: stretch;">
+
+                        <div id="toastEditor" class="mb-5"></div>
+
+                        <textarea id="content" name="content" hidden></textarea>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
     <script src="/js/previewImage.js"></script>
     <script src="/js/post.js"></script>
 </section>
