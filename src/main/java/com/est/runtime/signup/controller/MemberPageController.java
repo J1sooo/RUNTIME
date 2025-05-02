@@ -36,6 +36,6 @@ public class MemberPageController {
     @PostMapping("/member/save")
     public String pageSave(@ModelAttribute MemberDTO memberDTO) {
         memberService.save(memberDTO);
-        return "index";  // 가입 성공 후 이동할 페이지
+        return "login";  // 가입 성공 후 이동할 페이지
     }
 }
