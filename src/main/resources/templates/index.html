@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"> <!-- 레이아웃  -->
 <head>
-    <meta charset="UTF-8">
-    <title>index</title>
+    <title>게시글 목록</title>
 </head>
 <body>
-    <h2>안녕하세요</h2>
-    <a href="/member/save">회원가입</a>
-    <a href="/login">로그인</a>
-
+<section layout:fragment="main">
+    <h1>테스트</h1>
+    <p>테스트1.</p>
+</section>
 </body>
 </html>
