@@ -33,6 +33,9 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:http-client-spi:2.25.4'
 
+    //thymeleaf-layout
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     
