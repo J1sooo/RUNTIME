@@ -1,149 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>게시글 목록</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet" />
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 
-  <style>
-    .card-body img {
-      width: 50%;
-      max-width: 50%;
-      height: auto;
-      object-fit: contain;
-    }
+<head layout:fragment="head">
+    <link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet" />
 
-    .card-text img{
-      width: 100%;
-      max-width: 70%;
-      height: auto;
-      object-fit: contain;
-      display: block;
-      margin: 0;
-      padding: 0;
-      text-align: left;
-    }
+    <style>
+        .card-body img {
+            width: 50%;
+            max-width: 50%;
+            height: auto;
+            object-fit: contain;
+        }
 
-    .card-body p, .card-body textarea {
-      display: block;
-      width: 100%;
-    }
+        .card-text img {
+            width: 100%;
+            max-width: 70%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
 
-  </style>
-  <!-- Bootstrap 4 CDN -->
-<body class="bg-light py-5 ml-5 mr-5">
-<div class="container text-dark col-lg-8" style="min-width: 400px;">
-  <div class="container-fluid bg-white text-white p-5">
-    <div class="d-flex justify-content-between">
+        .card-body p, .card-body textarea {
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
 
-      <h2 class = "text-dark">RUNTIME</h2>
-      <div class="d-flex align-items-center">
-        <div class="text-end me-3 ml-2">
-          <button class = "btn btn-light text-dark shadow-sm"><i class="bi bi-person"></i></button>
+<section layout:fragment="main">
+    <div class="row mt-0">
+        <!-- 사이드바 -->
+        <div class="col-md-3 pt-5 mt-1 pl-4 bg-white">
+            <h5><br>RUNTIME</h5><br>
+            <a href="#" class="text-dark">🏠 홈</a><br><br>
+            <a href="#" class="text-dark">📄 공지사항</a><br><br>
+            <a href="#" class="text-dark">💬 소통게시판</a><br><br>
+            <a href="#" class="text-dark">🤝 크루게시판</a><br><br>
         </div>
 
-        <div class="text-end me-3 ml-2">
-          <button class = "btn btn-light text-dark shadow-sm"><i class="bi bi-envelope"></i></button>
-        </div>
-
-        <div class="text-end me-3 ml-2 mr-3">
-          <button class = "btn btn-light text-dark shadow-sm">로그아웃</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="container-fluid" >
-    <div class="row mt-0" >
-      <!-- 사이드바 (왼쪽) -->
-      <div class="col-md-10 col-lg-3 sidebar pt-5 mt-1 pl-5 bg-white">
-        <h5><br>RUNTIME</h5><br>
-        <a href="#" class="text-dark">🏠 홈</a><br><br>
-        <a href="#" class="text-dark">📄 공지사항</a><br><br>
-        <a href="#" class="text-dark">💬 소통게시판</a><br><br>
-        <a href="#" class="text-dark">🤝 크루게시판</a><br><br>
-      </div>
-
-      <!-- 메인 콘텐츠 (오른쪽) -->
-      <div class="col-md-8 col-lg-9 mt-1 bg-white pt-4">
-        <div class="d-flex justify-content-between">
-          <h6 class="text-left mb-4 mt-5 fs-6 ">💬소통게시판</h6>
-          <div class="text-center mt-5 mr-5 ">
-            <a href="/post" class="btn btn-dark mr-4">목록</a>
-          </div>
-
-
-
-        </div>
-        <div class="container my-5">
-          <div class="card shadow-sm mr-5">
-
-
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText">게시글 제목</span>
-              <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
-              <div>
-                <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
-                <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
-                <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
-              </div>
-            </div>
-
-            <div class="card-body">
-              <div class="card-text" th:utext="${post.content}" id="postContentText">본문 내용</div>
-              <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
-            </div>
-
-
-
-            <div th:if="${post.images != null and !post.images.isEmpty()}" class="mt-4">
-              <div class="row g-3">
-                <div class="col-md-6" th:each="image : ${post.images}">
-                  <img th:src="${image.imgUrl}" class="img-fluid rounded border" alt="Post Image">
+        <!-- 본문 -->
+        <div class="col-md-9 pt-4 bg-white">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <div class="text-center mt-5 mr-5">
+                    <a href="/post" class="btn btn-dark mr-4">목록</a>
                 </div>
-              </div>
             </div>
-          </div>
 
+            <div class="container my-5">
+                <div class="card shadow-sm mr-5">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText">게시글 제목</span>
+                        <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
+                        <div>
+                            <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
+                            <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
+                            <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
+                        </div>
+                    </div>
 
+                    <div class="card-body">
+                        <div class="card-text" th:utext="${post.content}" id="postContentText">본문 내용</div>
+                        <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
+                    </div>
 
-          <!--            <div class="card-footer text-end">-->
-          <!--              <div class="mt-4">-->
-          <!--                <div th:each="comment : ${post.comments}" class="d-flex mb-3">-->
-          <!--                  <div class="comment-bubble p-2" style="background-color: #f0f0f0; border-radius: 15px; max-width: 80%; word-wrap: break-word;">-->
-          <!--                    <p th:text="${comment.text}">댓글 내용</p>-->
-          <!--                  </div>-->
-          <!--                </div>-->
-          <!--              </div>-->
-          <!--              <div class="d-flex w-100">-->
-          <!--                &lt;!&ndash; 왼쪽: 댓글 작성 공간 &ndash;&gt;-->
-          <!--                <div class="d-flex w-100">-->
-          <!--    <textarea class="form-control me-2 w-100" id="commentText" rows="2" placeholder="댓글을 입력하세요..."-->
-          <!--              style="border-radius: 0px; border: 1px solid #ccc;"></textarea>-->
-          <!--                  <button type="submit" class="btn btn-primary btn-sm" id="submitComment">등록</button>-->
-          <!--                </div>-->
+                    <div th:if="${post.images != null and !post.images.isEmpty()}" class="mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6" th:each="image : ${post.images}">
+                                <img th:src="${image.imgUrl}" class="img-fluid rounded border" alt="Post Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-          <!-- 오른쪽: 댓글 등록 버튼 -->
 
         </div>
-
-        <!-- 댓글 리스트 -->
-
-      </div>
-
     </div>
-  </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<script src="/js/post.js"></script>
-</body>
+
+    <script src="/js/post.js"></script>
+</section>
 </html>
