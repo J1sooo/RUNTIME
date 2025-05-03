@@ -7,14 +7,7 @@
 <section layout:fragment="main">
     <div class="row mt-0">
 
-        <div class="col-md-3 pt-5 mt-1 pl-4 bg-white">
-            <h5><br>RUNTIME</h5><br>
-            <a href="#" class="text-dark">🏠 홈</a><br><br>
-            <a href="#" class="text-dark">📄 공지사항</a><br><br>
-            <a href="#" class="text-dark">💬 소통게시판</a><br><br>
-            <a href="#" class="text-dark">🤝 크루게시판</a><br><br>
-        </div>
-
+        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
 
         <div class="col-md-9 pt-4 bg-white">
             <div class="d-flex justify-content-between">
