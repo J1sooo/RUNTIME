@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head layout:fragment="head">
+    <link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet" />
+
+    <style>
+        .card-body img {
+            width: 50%;
+            max-width: 50%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .card-text img {
+            width: 100%;
+            max-width: 70%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        .card-body p, .card-body textarea {
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<section layout:fragment="main">
+    <div class="row mt-0">
+        <!-- 사이드바 -->
+        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+
+        <!-- 본문 -->
+        <div class="col-md-9 pt-4 bg-white">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <div class="text-center mt-5 mr-5">
+                    <a href="/post" class="btn btn-dark mr-4">목록</a>
+                </div>
+            </div>
+
+            <div class="container my-5">
+                <div class="card shadow-sm mr-5">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText">게시글 제목</span>
+                        <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
+                        <div>
+                            <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
+                            <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
+                            <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-text" th:utext="${post.content}" id="postContentText">본문 내용</div>
+                        <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
+                    </div>
+
+                    <div th:if="${post.images != null and !post.images.isEmpty()}" class="mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6" th:each="image : ${post.images}">
+                                <img th:src="${image.imgUrl}" class="img-fluid rounded border" alt="Post Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="/js/post.js"></script>
+</section>
+</html>

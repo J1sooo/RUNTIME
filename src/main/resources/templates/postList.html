@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<section layout:fragment="main">
+    <div class="row mt-0">
+
+        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+
+        <div class="col-md-9 pt-4 bg-white">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <div class="text-center mt-5 mr-5">
+                    <a href="/post/new" class="btn btn-dark btn-sm shadow-sm">+ 글쓰기</a>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div th:each="post : ${posts}" class="card mb-1 shadow-sm mx-auto col-lg-11" style="border: none;">
+                    <div class="card-body pl-2 pt-3" style="border: none;">
+                        <h6 class="card-title mb-0 p-0 flex-grow-1" id="postTitle">
+                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">게시글 제목</a>
+                            <span th:if="${post.hasImages()}">
+                                <i class="bi bi-image" style="font-size: 20px;"></i>
+                            </span>
+                        </h6>
+                        <span th:text="${post.content}"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center mt-4">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/post(page=${currentPage - 1})}">이전</a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/post(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/post(page=${currentPage + 1})}">다음</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+</html>
