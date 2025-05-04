@@ -2,7 +2,6 @@ package com.est.runtime.signup.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,9 +11,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 
+import com.est.runtime.signup.interceptors.LoginRequestLoggingFailureHandler;
+import com.est.runtime.signup.interceptors.LoginRequestLoggingSuccessHandler;
+import lombok.AllArgsConstructor;
+
 @EnableWebSecurity
 @Configuration
+@AllArgsConstructor
 public class WebSecurityConfig {
+    private final LoginRequestLoggingFailureHandler loginFailureHandler;
+    private final LoginRequestLoggingSuccessHandler loginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -22,6 +28,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/index",
+                                "/login?error",
                                 "/member/save",
                                 "/api/member/login-status",
                                 "/api/member/save",
@@ -31,6 +38,7 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/post"// 나중에 등급별 생기면 삭제
+
                         ).permitAll()
                         .requestMatchers("/post").access((authentication, context) -> {
                             if (context instanceof RequestAuthorizationContext cx) {
@@ -46,7 +54,8 @@ public class WebSecurityConfig {
                 )
                 .formLogin(auth -> auth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/index", true)
+                        .successHandler(loginSuccessHandler)
+                        .failureHandler(loginFailureHandler)
                         .permitAll()
                 )
                 .logout(auth -> auth
