@@ -26,6 +26,7 @@ public class LoggingService {
         }
         Member memberGet = memberQuery.get();
         if (isSuccessful){
+            memberGet.incrementLoginCount();
             memberGet.resetFailureCount();
             memberGet = memberRepository.save(memberGet);
         } else {
