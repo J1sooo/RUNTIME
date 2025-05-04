@@ -41,6 +41,10 @@ public class Member implements UserDetails {
     @JoinColumn(name = "user_level")
     private UserLevel level;
 
+    private Long loginCount = 0L;
+    
+    private Long consecutiveFailedLoginAttempts = 0L;
+
     public static Member toEntity(MemberDTO dto) {
         Member member = new Member();
         member.setUsername(dto.getUsername());
@@ -53,6 +57,15 @@ public class Member implements UserDetails {
     }
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
+    }
+    public Long incrementLoginCount() {
+        return ++loginCount;
+    }
+    public Long incrementFailureCount() {
+        return ++consecutiveFailedLoginAttempts;
+    }
+    public void resetFailureCount() {
+        this.consecutiveFailedLoginAttempts = 0L;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
