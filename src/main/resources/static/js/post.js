@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
         height: "500px",
         initialEditType: "wysiwyg",
         previewStyle: "vertical",
+        toolbarItems: [
+            ['heading', 'bold', 'italic', 'quote'],
+            ['ul', 'ol'],
+            ['link', 'image']
+        ],
         hooks: {
             addImageBlobHook: (blob, callback) => {
 

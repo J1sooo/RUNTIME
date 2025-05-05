@@ -1,0 +1,12 @@
+### GET request to example server
+GET http://localhost:8080/api/articles
+
+###
+POST http://localhost:8080/api/articles
+Content-Type: application/json
+
+{
+  "title": "안녕하세요",
+  "content": "신입입니다."
+}
+
