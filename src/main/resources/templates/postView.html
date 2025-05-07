@@ -6,7 +6,6 @@
 
 <head layout:fragment="head">
     <link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet" />
-
     <style>
         .card-body img {
             width: 50%;
@@ -29,6 +28,14 @@
         .card-body p, .card-body textarea {
             display: block;
             width: 100%;
+        }
+
+        .like-button {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 1.2rem;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -62,6 +69,12 @@
                     <div class="card-body">
                         <div class="card-text" th:utext="${post.content}" id="postContentText">본문 내용</div>
                         <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
+
+                        <!-- 좋아요 버튼 관련-->
+                        <div class="mt-3">
+                            <button id="like-btn" class="like-button" th:data-post-id="${post.id}">👍</button>
+                            <span id="like-count" th:text="${post.likes}">0</span>
+                        </div>
                     </div>
 
                     <div th:if="${post.images != null and !post.images.isEmpty()}" class="mt-4">
@@ -73,11 +86,9 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 
-    <script src="/js/post.js"></script>
+    <script src="/js/like.js"></script>
 </section>
 </html>
