@@ -42,7 +42,7 @@ public class Member implements UserDetails {
     private UserLevel level;
 
     private Long loginCount = 0L;
-    
+
     private Long consecutiveFailedLoginAttempts = 0L;
 
     public static Member toEntity(MemberDTO dto) {
