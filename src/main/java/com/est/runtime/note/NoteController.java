@@ -18,7 +18,7 @@ import java.util.List;
 public class NoteController {
     private final NoteService noteService;
 
-    @PostMapping()
+    @PostMapping("")
     public ResponseEntity<ResponseNote> send(@AuthenticationPrincipal Member sender, @RequestBody RequestNote request) {
         Note note = noteService.sendNote(sender, request);
 
