@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>마이페이지</title>
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="container mt-5">
+        <div class="row">
+            <!-- 사이드바 (왼쪽) -->
+            <div class="col-md-3">
+                <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+            </div>
+
+            <!-- 본문 (오른쪽) -->
+            <div class="col-md-9">
+                <h2>마이페이지 - 회원정보 수정</h2>
+
+                <!-- 회원 정보 수정 폼 -->
+                <form id="update-form">
+                    <div class="form-group">
+                        <label for="username">이메일 (username)</label>
+                        <input type="text" id="username" name="username" class="form-control" th:value="${member.username}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="current-password">현재 비밀번호</label>
+                        <input type="password" id="current-password" name="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">새 닉네임</label>
+                        <input type="text" id="nickname" name="newNickname" class="form-control" th:value="${member.nickname}">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">새 비밀번호</label>
+                        <input type="password" id="new-password" name="newPassword" class="form-control">
+                    </div>
+                    <button type="button" class="btn btn-primary mt-3" id="update-btn">정보 수정</button>
+                </form>
+
+                <div class="form-group mt-4">
+                    <label for="delete-password">탈퇴 비밀번호 확인</label>
+                    <input type="password" id="delete-password" name="deletePassword" class="form-control" placeholder="탈퇴를 위해 현재 비밀번호를 입력해주세요.">
+                </div>
+
+                <hr>
+
+                <div class="mt-4">
+                    <h4>회원 탈퇴</h4>
+                    <button type="button" class="btn btn-danger" id="delete-btn">회원 탈퇴하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/mypage.js"></script>
+</section>
+</body>
+</html>
