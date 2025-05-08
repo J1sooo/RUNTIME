@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"> <!-- 레이아웃  -->
+<head>
+    <title>쪽지함</title>
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="row mt-0">
+        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+        <div class="col-md-9 pt-4">
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <a th:href="@{/notes(type='received')}" th:classappend="${type} == 'received' ? 'active' : ''">받은 쪽지</a>
+                    <a th:href="@{/notes(type='sent')}" th:classappend="${type} == 'sent' ? 'active' : ''">보낸 쪽지</a>
+                </div>
+                <div class="text-center">
+                    <a href="/note/new" class="btn btn-dark btn-sm shadow-sm">쪽지보내기</a>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>메세지</th>
+                        <th th:text="${type} == 'received' ? '보낸 사람' : '받은 사람'">상대</th>
+                        <th>시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="note : ${notes}">
+                        <td th:text="${note.message}">쪽지 내용</td>
+                        <td th:text="${type == 'received' ? note.sender.nickname : note.receiver.nickname}">닉네임</td>
+                        <td th:text="${#temporals.format(note.sentAt, 'yyyy-MM-dd HH:mm')}">보낸 시간</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
