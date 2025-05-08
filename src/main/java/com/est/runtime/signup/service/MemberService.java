@@ -1,5 +1,6 @@
 package com.est.runtime.signup.service;
 
+import com.est.runtime.post.PostLikeRepository;
 import com.est.runtime.signup.dto.*;
 import com.est.runtime.signup.entity.*;
 import com.est.runtime.signup.repository.*;
@@ -26,6 +27,8 @@ public class MemberService implements UserDetailsService {
     private final AuthorityForLevelRepository authorityForLevelRepository;
     private final LoginRequestLogRepository loginRequestLogRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final PostLikeRepository postLikeRepository;
+
 
     public void save(MemberDTO memberDTO) {
         Member member = Member.toEntity(memberDTO);
@@ -161,6 +164,9 @@ public class MemberService implements UserDetailsService {
 
                     // 로그인 요청 로그 먼저 삭제
                     loginRequestLogRepository.deleteByMember(memberToDelete);
+
+                    //로그인 좋아요 로그 삭제
+                    postLikeRepository.deleteByMember(memberToDelete);
 
                     // 회원 삭제
                     memberRepository.deleteById(memberToDelete.getId());

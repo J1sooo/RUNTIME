@@ -1,8 +1,14 @@
 package com.est.runtime.signup.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+
+import com.est.runtime.comment.Comment;
+import com.est.runtime.post.Post;
+import com.est.runtime.post.PostLike;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +42,16 @@ public class Member implements UserDetails {
 
     @Column(nullable = false)
     private boolean formLogin = true; // 기본 로그인 방식 설정
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+
 
     @ManyToOne
     @JoinColumn(name = "user_level")
