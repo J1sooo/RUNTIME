@@ -1,15 +1,22 @@
 let editor;
 
 document.addEventListener("DOMContentLoaded", () => {
+    const editorElement = document.querySelector("#toastEditor");
+    if (!editorElement) return; // toastEditor가 없으면 실행하지 않음
 
+    // toastEditor가 존재하면 에디터 초기화
     editor = new toastui.Editor({
-        el: document.querySelector("#toastEditor"),
+        el: editorElement,
         height: "500px",
         initialEditType: "wysiwyg",
         previewStyle: "vertical",
+        toolbarItems: [
+            ['heading', 'bold', 'italic', 'quote'],
+            ['ul', 'ol'],
+            ['link', 'image']
+        ],
         hooks: {
             addImageBlobHook: (blob, callback) => {
-
                 uploadImage(blob, callback);
                 return false;
             }

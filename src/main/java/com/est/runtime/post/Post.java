@@ -1,5 +1,6 @@
 package com.est.runtime.post;
 
+import com.est.runtime.comment.Comment;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.post.img.Image;
 import com.est.runtime.signup.entity.Member;
@@ -36,6 +37,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, Member member) {

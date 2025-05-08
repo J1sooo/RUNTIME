@@ -50,16 +50,15 @@
 
 <section layout:fragment="main">
     <div class="row">
-        <!-- 사이드바 -->
+
         <div th:replace="fragments/sidebar :: sidebarFragment"></div>
 
-        <!-- 본문 -->
         <div class="col-md-9 pt-4">
             <div class="d-flex justify-content-between">
                 <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
             </div>
 
-            <div class="mx-auto" style="max-width: 720px;">
+            <div class="mx-auto col-lg-11">
                 <h4 class="text-center mt-5">새 글 작성</h4>
 
                 <form id="postForm" th:object="${post}" class="mt-4">

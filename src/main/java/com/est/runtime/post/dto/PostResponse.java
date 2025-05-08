@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponse {
+    private Long id;
     private String title;
     private String content;
     private List<String> imgUrls;
@@ -22,6 +23,7 @@ public class PostResponse {
     private AuthorDTO author;
 
     public PostResponse(Post post) {
+        this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.imgUrls = post.getImages().stream()
