@@ -27,4 +27,10 @@ public class NoteViewController {
 
         return "note";
     }
+
+    @GetMapping("/note/new")
+    public String getNotes(Model model) {
+        model.addAttribute("note", new RequestNote());
+        return "newNote";
+    }
 }
