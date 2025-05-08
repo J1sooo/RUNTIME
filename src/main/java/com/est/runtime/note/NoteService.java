@@ -18,7 +18,7 @@ public class NoteService {
     public Note sendNote(Member sender, RequestNote request) {
         Member senderId = memberRepository.findById(sender.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Note not found"));
-        Member receiverId = memberRepository.findById(request.getReceiver())
+        Member receiverId = memberRepository.findByUsername(request.getReceiver())
                 .orElseThrow(() -> new EntityNotFoundException("Note not found"));
 
         Note note = request.toEntity(request.getMessage(), senderId, receiverId);

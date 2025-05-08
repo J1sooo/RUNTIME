@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class RequestNote {
-    private Long receiver;
+    private String receiver;
     private String message;
 
     public Note toEntity(String message, Member sender, Member receiver) {
