@@ -21,6 +21,7 @@ public class PostResponse {
     private List<String> imgUrls;
     private LocalDateTime createdAt;
     private AuthorDTO author;
+    private Long likes;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -31,6 +32,7 @@ public class PostResponse {
                 .toList();
         this.createdAt = post.getCreatedAt();
         this.author = new AuthorDTO(post.getMember());
+        this.likes = post.getLikes();
     }
 }
 
