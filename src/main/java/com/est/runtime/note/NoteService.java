@@ -28,11 +28,11 @@ public class NoteService {
     }
 
     public List<Note> receivedNote(Member receiver) {
-        return noteRepository.findByReceiverId(receiver.getId());
+        return noteRepository.findByReceiverIdOrderBySentAtDesc(receiver.getId());
     }
 
     public List<Note> sentNote(Member sender) {
-        return noteRepository.findBySenderId(sender.getId());
+        return noteRepository.findBySenderIdOrderBySentAtDesc(sender.getId());
     }
 
     public void deleteNote(Member sender, Long id) {
