@@ -52,4 +52,10 @@ public class NoteController {
         noteService.deleteNote(sender, id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/has-unread")
+    public ResponseEntity<Boolean> hasUnReadNote(@AuthenticationPrincipal Member receiver) {
+        boolean isRead = noteService.IsReadNote(receiver);
+        return ResponseEntity.ok(isRead);
+    }
 }

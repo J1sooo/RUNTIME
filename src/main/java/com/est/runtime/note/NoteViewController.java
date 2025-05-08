@@ -20,6 +20,8 @@ public class NoteViewController {
     public String getNotes(@AuthenticationPrincipal Member member,
                            @RequestParam(defaultValue = "received") String type,
                            Model model) {
+        noteService.markAllAsRead(member);
+
         List<Note> notes = type.equals("received") ? noteService.receivedNote(member) : noteService.sentNote(member);
 
         model.addAttribute("type", type);

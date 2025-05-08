@@ -30,6 +30,8 @@ public class Note {
     @Column(nullable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
 
+    private boolean isRead = false;
+
     @Builder
     public Note(String message, Member sender, Member receiver) {
         this.message = message;
@@ -39,5 +41,9 @@ public class Note {
 
     public ResponseNote toDto() {
         return new ResponseNote(this);
+    }
+
+    public void readNote() {
+        this.isRead = true;
     }
 }

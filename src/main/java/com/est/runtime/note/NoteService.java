@@ -4,6 +4,7 @@ import com.est.runtime.note.dto.RequestNote;
 import com.est.runtime.signup.entity.Member;
 import com.est.runtime.signup.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,18 @@ public class NoteService {
                 .orElseThrow(() -> new EntityNotFoundException("Note not found"));
         if (sender.getId().equals(note.getSender().getId())) {
             noteRepository.deleteById(id);
+        }
+    }
+
+    public Boolean IsReadNote(Member receiver) {
+        return noteRepository.existsByReceiverAndIsReadFalse(receiver);
+    }
+
+    @Transactional
+    public void markAllAsRead(Member receiver) {
+        List<Note> unreadNotes = noteRepository.findAllByReceiverAndIsReadFalse(receiver);
+        for (Note note : unreadNotes) {
+            note.readNote();
         }
     }
 }
