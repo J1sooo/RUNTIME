@@ -4,34 +4,70 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
+<meta charset="UTF-8">
 <section layout:fragment="main">
-    <div class="row mt-0">
+    <div class="row mt-0 pr-1 mr-0">
 
         <div th:replace="fragments/sidebar :: sidebarFragment"></div>
 
-        <div class="col-md-9 pt-4 bg-white">
-            <div class="d-flex justify-content-between">
+        <div class="col-md-9 pr-4 pl-4 ml-3 pt-4 bg-white">
+            <div class="d-flex justify-content-between mb-3">
                 <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
-                <div class="text-center mt-5 mr-5">
+                <div class="text-center mt-5">
                     <a href="/post/new" class="btn btn-dark btn-sm shadow-sm">+ 글쓰기</a>
                 </div>
             </div>
 
+            <div class="card mb-1 shadow-sm mx-auto col-lg-12 mt-5 pr-0 mr-0" style="border: none; background-color: #f8f9fa;">
+                <div class="card-body px-0 pt-3 pb-2 pl-2" style="border: none;">
+                    <div class="row gx-0">
 
-            <div class="form-group">
-                <div th:each="post : ${posts}" class="card mb-1 shadow-sm mx-auto col-lg-11" style="border: none;">
-                    <div class="card-body pl-2 pt-3" style="border: none;">
-                        <h6 class="card-title mb-0 p-0 flex-grow-1" id="postTitle">
-                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">게시글 제목</a>
-                            <span th:if="${post.hasImages()}">
-                                <i class="bi bi-image" style="font-size: 20px;"></i>
-                            </span>
-                        </h6>
-                        <span th:text="${post.content}"></span>
+                        <div class="col-7 fw-bold mr-2 pl-3" style="font-size: 16px; color: #000; padding: 5px;">
+                            제목
+                        </div>
+
+                        <div class="col-2 fw-bold text-start mr-3 pl-2" style="font-size: 16px; color: #000; padding: 5px;">
+                            작성자
+                        </div>
+
+                        <div class="col-2 fw-bold text-start pl-3" style="font-size: 16px; color: #000; padding: 5px;">
+                            작성일자
+                        </div>
                     </div>
                 </div>
             </div>
 
+
+
+            <div th:each="post : ${posts}" class="card mb-1 shadow-sm mx-auto col-lg-12 mr-0" style="border: none;">
+                <span class="post-content" th:utext="${post.content}" style="display: none;"></span>
+                <div class="card-body px-0 pt-0 pb-0 pl-2">
+
+                    <div class="row gx-0">
+
+                        <div class="col-7 mr-4 pl-3" style="padding: 5px; font-size: 15px;">
+                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                            <i class="bi bi-image img-star" style="display: none; font-size: 15px;"></i>
+                        </div>
+
+                        <div class="col-2 text-start px-0 d-flex" style="padding: 5px; font-size: 15px;">
+                            <span th:text="${post.author.nickname}" style="font-size: 14px;"></span>
+                            <span th:switch="${post.author.levelNumber}">
+                                                <small th:case="1">🥉</small>
+                                                <small th:case="2">🥈</small>
+                                                <small th:case="3">🥇</small>
+                                            </span>
+                        </div>
+
+                        <div class="col-2 text-start ml-3 pl-2" style="padding: 5px; font-size: 14px;"
+                             th:text="${#temporals.format(post.createdAt, 'MM-dd HH:mm')}">
+                            2025-01-01 12:00
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
 
             <div class="d-flex justify-content-center mt-4">
                 <nav>
@@ -52,5 +88,19 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const posts = document.querySelectorAll('.card');
+
+            posts.forEach(post => {
+                const content = post.querySelector('.post-content');
+                const star = post.querySelector('.img-star');
+
+                if (content && content.innerHTML.includes('<img')) {
+                    star.style.display = 'inline';
+                }
+            });
+        });
+    </script>
 </section>
 </html>

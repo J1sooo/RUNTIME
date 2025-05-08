@@ -10,9 +10,14 @@ import lombok.NoArgsConstructor;
 public class AuthorDTO {
     private Long id;
     private String nickname;
+    private String levelName;
+    private Integer levelNumber;
 
     public AuthorDTO(Member member) {
         this.id = member.getId();
         this.nickname = member.getNickname();
+        this.levelName = member.getLevel().getLevelName();     // null 체크 불필요
+        this.levelNumber = member.getLevel().getLevelNumber();
+
     }
 }
