@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 userButtons.innerHTML = `
                     <div class="text-end me-3 ml-2">
-                        <button class="btn btn-light text-dark shadow-sm">
+                        <a href="/mypage" class="btn btn-light text-dark shadow-sm">
                             <i class="bi bi-person"></i>
-                        </button>
+                        </a>
                     </div>
                     <div class="text-end me-3 ml-2">
                         <button class="btn btn-light text-dark shadow-sm">
