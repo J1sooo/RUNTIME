@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class LoginRequestLog {
     @Id
@@ -34,8 +33,6 @@ public class LoginRequestLog {
     private boolean isSuccessful;
     @ManyToOne(optional = false)
     private Member member;
-    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column
     private LocalDateTime loginTime;
 }
