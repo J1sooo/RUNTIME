@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"> <!-- 레이아웃  -->
+<head>
+    <title>쪽지함</title>
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="row mt-0">
+        <div th:replace="~{fragments/sidebar :: sidebarFragment}"></div>
+        <div class="col-md-9 pt-4">
+            <h4 class="text-center mt-5">쪽지 작성</h4>
+            <div class="d-flex justify-content-between mb-3">
+                <a th:href="@{/notes}">뒤로가기</a>
+                <button id="noteBtn" type="button" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">쪽지 보내기</button>
+            </div>
+
+
+            <input type="text" id="receiver" class="form-control mb-3" placeholder="받는 유저의 id를 입력하세요" />
+
+            <textarea id="message" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요"></textarea>
+        </div>
+    </div>
+    <script src="/js/note.js"></script>
+</section>
+</body>
+</html>
