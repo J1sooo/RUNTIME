@@ -51,7 +51,7 @@
                         </div>
 
                         <div class="col-2 text-start px-0 d-flex" style="padding: 5px; font-size: 15px;">
-                            <span th:text="${post.author.nickname}"></span>
+                            <span th:text="${post.author.nickname}" style="font-size: 14px;"></span>
                             <span th:switch="${post.author.levelNumber}">
                                                 <small th:case="1">🥉</small>
                                                 <small th:case="2">🥈</small>
@@ -59,7 +59,7 @@
                                             </span>
                         </div>
 
-                        <div class="col-2 text-start ml-3 pl-2" style="padding: 5px; font-size: 15px;"
+                        <div class="col-2 text-start ml-3 pl-2" style="padding: 5px; font-size: 14px;"
                              th:text="${#temporals.format(post.createdAt, 'MM-dd HH:mm')}">
                             2025-01-01 12:00
                         </div>

@@ -142,7 +142,7 @@
                         <div class="card px-4 mb-1" style="position: relative; border: none; border-bottom: 1px solid #dee2e6;">
                             <div class="d-flex align-items-center">
                             <div class="d-flex align-items-center flex-grow-1">
-                                <span th:text="${comment.author.nickname}" class="fw-medium mr-1">닉네임</span>
+                                <small th:text="${comment.author.nickname}" class="fw-medium mr-1">닉네임</small>
                                 <span th:switch="${comment.author.levelNumber}">
                                     <small th:case="1">🥉</small>
                                     <small th:case="2">🥈</small>
@@ -173,7 +173,7 @@
                                 <div class="card px-4 mb-1 mr-0 pb-0" style="position: relative; border: none; border-bottom: 1px solid #ccc;">
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex align-items-center flex-grow-1">
-                                            <span th:text="${reply.author.nickname}" class="fw-medium mr-1">닉네임</span>
+                                            <small th:text="${reply.author.nickname}" class="fw-medium mr-1">닉네임</small>
                                             <span th:switch="${reply.author.levelNumber}">
                                                 <small th:case="1">🥉</small>
                                                 <small th:case="2">🥈</small>
