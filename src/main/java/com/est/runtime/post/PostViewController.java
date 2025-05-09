@@ -33,15 +33,17 @@ public class PostViewController {
     public String showPostList(
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "10", name = "size") int size,
+            @RequestParam Long board,  // 게시판 ID를 받아서 해당 게시판의 게시글만 조회
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Post> postPage = postService.findPosts(pageable);
+        Page<Post> postPage = postService.findPostsByBoardId(board, pageable);
         Page<PostResponse> postResponsePage = postPage.map(PostResponse::new);
 
         model.addAttribute("posts", postResponsePage.getContent());
         model.addAttribute("currentPage", postPage.getNumber());
         model.addAttribute("totalPages", postPage.getTotalPages());
+        model.addAttribute("boardId", board);
 
         return "postList";
     }

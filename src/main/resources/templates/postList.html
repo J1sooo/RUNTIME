@@ -12,9 +12,9 @@
 
         <div class="col-md-9 pr-4 pl-4 ml-3 pt-4 bg-white">
             <div class="d-flex justify-content-between mb-3">
-                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <h6 id="boardTitle" class="text-left mb-4 mt-5 fs-6"></h6>
                 <div class="text-center mt-5">
-                    <a href="/post/new" class="btn btn-dark btn-sm shadow-sm">+ 글쓰기</a>
+                    <a th:href="@{/post/new(board=${boardId})}" class="btn btn-dark btn-sm shadow-sm">+ 글쓰기</a>
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
                     <div class="row gx-0">
 
                         <div class="col-7 mr-4 pl-3" style="padding: 5px; font-size: 15px;">
-                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                            <a th:href="@{/post/{id}(id=${post.id}, board=${boardId})}" th:text="${post.title}"></a>
                             <i class="bi bi-image img-star" style="display: none; font-size: 15px;"></i>
                         </div>
 
@@ -73,15 +73,13 @@
                 <nav>
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/post(page=${currentPage - 1})}">이전</a>
+                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${currentPage - 1})}">이전</a>
                         </li>
-                        <li class="page-item"
-                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/post(page=${i})}" th:text="${i + 1}">1</a>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${i})}" th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/post(page=${currentPage + 1})}">다음</a>
+                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${currentPage + 1})}">다음</a>
                         </li>
                     </ul>
                 </nav>

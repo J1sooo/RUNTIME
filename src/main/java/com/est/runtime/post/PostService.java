@@ -1,5 +1,6 @@
 package com.est.runtime.post;
 
+import com.est.runtime.board.Board;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.s3.ImgUploadService;
@@ -32,8 +33,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post savePost(PostRequest request, List<MultipartFile> files, Member author) throws IOException {
-        Post post = request.toEntity(author);
+    public Post savePost(PostRequest request, List<MultipartFile> files, Member author, Board board) throws IOException {
+        Post post = request.toEntity(author, board);
         if (files != null && !files.isEmpty()) {
             imgUploadService.uploadFiles(files, post);
         }
@@ -65,6 +66,11 @@ public class PostService {
         }
         post.update(request.getTitle(), request.getContent());
         return post;
+    }
+
+    public Page<Post> findPostsByBoardId(Long boardId, Pageable pageable) {
+        // 해당 게시판 ID로 게시글을 조회하는 로직을 작성합니다.
+        return postRepository.findByBoardId(boardId, pageable);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.est.runtime.post;
 
+import com.est.runtime.board.Board;
+import com.est.runtime.board.BoardRepository;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.signup.entity.Member;
@@ -23,16 +25,22 @@ import java.util.List;
 @RestController
 public class PostController {
     private final PostService postService;
+    private final BoardRepository boardRepository;
+    private final PostRepository postRepository;
 
-    @PostMapping("/api/post")
-    public ResponseEntity<PostResponse> savePost(@RequestPart("post") PostRequest request,
+    @PostMapping("/api/board/{boardId}/post")
+    public ResponseEntity<PostResponse> savePost(@PathVariable Long boardId,
+                                                 @RequestPart("post") PostRequest request,
                                                  @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                                  @AuthenticationPrincipal Member member) throws IOException {
         if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Post post = postService.savePost(request, files, member);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+        Post post = postService.savePost(request, files, member, board);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,5 +75,19 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         Post post = postService.findPost(id);
         return ResponseEntity.ok(post.toDto());
+    }
+    @GetMapping("/api/board/{boardId}/posts")
+    public ResponseEntity<Page<PostResponse>> findPostsByBoard(
+            @PathVariable Long boardId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> postsPage = postRepository.findByBoard(board, pageable);
+        Page<PostResponse> response = postsPage.map(PostResponse::new);
+
+        return ResponseEntity.ok(response);
     }
 }

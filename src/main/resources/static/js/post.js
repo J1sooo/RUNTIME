@@ -31,6 +31,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const filesInput = document.getElementById("files");
     const submitBtn = document.getElementById("submitBtn");
 
+    const boardIdFromUrl = params.get("board");
+    if (boardIdFromUrl) {
+        const boardInput = document.querySelector("input[name='boardId']");
+        if (boardInput) {
+            boardInput.value = boardIdFromUrl;
+        }
+
+        const boardTitle = document.querySelector("h6.fs-6"); // 💬소통게시판 제목 태그
+        const boardNames = {
+            1: "💬 소통게시판",
+            2: "🤝 크루게시판",
+            3: "📄 공지사항"
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const boardId = params.get("board");
+
+        if (boardTitle && boardId) {
+            boardTitle.textContent = boardNames[boardId] || "게시판";
+        }
+    }
+
     if (postId) {
         // 수정 모드
         fetch(`/api/post/${postId}`)
@@ -66,7 +88,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         Array.from(filesInput.files).forEach(file => formData.append("files", file));
 
-        fetch(`/api/post${id ? `/${id}` : ''}`, {
+        const boardId = document.querySelector("input[name='boardId']").value;
+
+        const url = method === "POST"
+            ? `/api/board/${boardId}/post`
+            : `/api/post/${id}`;
+
+        fetch(url, {
             method,
             body: formData
         })
@@ -76,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(() => {
                 alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
-                location.href = `/post${id ? `/${id}` : ''}`;
+                const boardId = document.querySelector("input[name='boardId']").value;
+                location.href = `/post?board=${boardId}${id ? `&id=${id}` : ''}`;
             })
             .catch(err => {
                 console.error("에러 발생:", err);
@@ -117,10 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteBtn.addEventListener("click", () => {
         const postId = deleteBtn.dataset.postId;
 
+        const params = new URLSearchParams(window.location.search);
+        const boardId = params.get("board");
+
         if (confirm("정말 이 게시글을 삭제하시겠습니까?")) {
             fetch(`/api/post/${postId}`, { method: "DELETE" })
                 .then(res => res.ok ? alert("삭제되었습니다.") : alert("삭제 실패: " + res.status))
-                .then(() => window.location.href = "/post")
+                .then(() => window.location.href = `/post?board=${boardId}`)
                 .catch(err => {
                     console.error("삭제 오류:", err);
                     alert("삭제에 실패했습니다.");
