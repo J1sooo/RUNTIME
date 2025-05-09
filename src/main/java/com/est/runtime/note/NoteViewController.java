@@ -32,7 +32,7 @@ public class NoteViewController {
     }
 
     @GetMapping("/note/new")
-    public String postNote(Model model, @RequestParam Long id) {
+    public String postNote(Model model, @RequestParam(defaultValue = "") Long id) {
         model.addAttribute("id", id);
         model.addAttribute("note", new RequestNote());
         return "newNote";
