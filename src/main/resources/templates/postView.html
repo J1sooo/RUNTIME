@@ -85,7 +85,7 @@
         <!-- 본문 -->
         <div class="col-md-9 pt-4 bg-white">
             <div class="d-flex justify-content-between ml-4">
-                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <h6 id="boardTitle" class="text-left mb-4 mt-5 fs-6"></h6>
                 <div class="text-center mt-5 pt-2 mr-2">
                     <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
                     <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="/post" class="btn btn-dark btn-sm shadow-sm mt-4">목록</a>
+                <a href="#" id="goToList" class="btn btn-dark btn-sm shadow-sm mt-4">목록</a>
             </div>
 
             <div class="col-lg-12 ml-2 mr-4 px-0" id="postContainer" th:attr="data-post-id=${post.id}">
@@ -149,7 +149,6 @@
                                     <small th:case="3">🥇</small>
                                 </span>
                             </div>
-                                <!-- 수정 및 삭제 버튼을 오른쪽 끝에 배치 -->
                                 <div class="ms-auto">
                                     <button class="icon-button editCommentBtn me-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✏️</button>
                                     <button class="icon-button deleteCommentBtn" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId or isowner}">❌</button>
@@ -213,6 +212,9 @@
                 </ul>
 
                 <form id="commentForm" class="col-lg-12 ml-0 mr-5 mt-2">
+
+                    <input type="hidden" id="boardId" name="boardId" th:value="${board.id}" />
+
                     <div class="mb-3 mx-0 mr-1">
                         <textarea class="form-control" id="commentBody" name="body" rows="1" style="font-size: 0.8em;" placeholder="댓글을 작성해주세요..." required></textarea>
                     </div>
@@ -237,5 +239,51 @@
         </div>
     <script src="/js/post.js"></script>
     <script src="/js/comment.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 게시판 제목 설정
+            const boardTitle = document.querySelector("#boardTitle");
+            const params = new URLSearchParams(window.location.search);
+            const boardId = params.get("board");
+            const boardNames = {
+                1: "📄 공지사항",
+                2: "💬 소통게시판",
+                4: "📝게시판",
+                5: "🔔공지사항",
+                6: "🗣️소통하기"
+            };
+
+            if (boardTitle && boardId) {
+                const parsedBoardId = parseInt(boardId);
+                boardTitle.textContent = boardNames[parsedBoardId] || "게시판";
+            }
+
+            const crewMenuToggle = document.getElementById("crewMenuToggle");
+            const crewSubmenu = document.getElementById("crewSubmenu");
+
+            crewMenuToggle.addEventListener("click", function(event) {
+                event.preventDefault();  // 페이지 이동 방지
+                if (crewSubmenu.style.display === "none" || crewSubmenu.style.display === "") {
+                    crewSubmenu.style.display = "block";  // 드롭다운 메뉴 표시
+                } else {
+                    crewSubmenu.style.display = "none";  // 드롭다운 메뉴 숨기기
+                }
+            });
+
+            const goToListBtn = document.getElementById("goToList");
+
+            if (goToListBtn) {
+                goToListBtn.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    if (boardId == 3) {
+                        window.location.href = "/post?board=3";
+                    } else {
+                        window.location.href = "/post";
+                    }
+                });
+            }
+        });
+    </script>
 </section>
 </html>

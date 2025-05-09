@@ -37,20 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (boardInput) {
             boardInput.value = boardIdFromUrl;
         }
-
-        const boardTitle = document.querySelector("h6.fs-6"); // 💬소통게시판 제목 태그
-        const boardNames = {
-            1: "💬 소통게시판",
-            2: "🤝 크루게시판",
-            3: "📄 공지사항"
-        };
-
-        const params = new URLSearchParams(window.location.search);
-        const boardId = params.get("board");
-
-        if (boardTitle && boardId) {
-            boardTitle.textContent = boardNames[boardId] || "게시판";
-        }
     }
 
     if (postId) {
@@ -78,6 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("최종 HTML:", htmlContent);
 
         contentInput.value = htmlContent; // 반드시 FormData 생성 전에 반영
+
+        const boardId = document.querySelector("input[name='boardId']").value;
+
+        if (boardId === "3" && !htmlContent.includes('<img ')) {
+            alert("게시글을 등록하려면 이미지를 첨부해야 합니다.");
+            return; // 이미지가 첨부되지 않았으면 제출을 중단
+        }
+
         const formData = new FormData();
 
         // JSON으로 포장하여 append
@@ -88,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         Array.from(filesInput.files).forEach(file => formData.append("files", file));
 
-        const boardId = document.querySelector("input[name='boardId']").value;
+
 
         const url = method === "POST"
             ? `/api/board/${boardId}/post`
@@ -105,11 +99,20 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(() => {
                 alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
                 const boardId = document.querySelector("input[name='boardId']").value;
-                location.href = `/post?board=${boardId}${id ? `&id=${id}` : ''}`;
+                if (boardId === "3") {
+                    location.href = `/post?board=3`;
+                } else {
+                    // PUT 또는 POST 후 다른 boardId로 리디렉션
+                    if (method === "PUT") {
+                        location.href = `/post/${id}?board=${boardId}`;
+                    } else {
+                        location.href = `/post?board=${boardId}`;
+                    }
+                }
             })
             .catch(err => {
                 console.error("에러 발생:", err);
-                alert("게시글 처리에 실패했습니다");
+                alert("게시글 처리에 실패했습니다.(글자수 확인)");
             });
     }
 

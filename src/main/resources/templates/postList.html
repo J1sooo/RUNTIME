@@ -88,6 +88,24 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+                const boardTitle = document.querySelector("#boardTitle");
+                const params = new URLSearchParams(window.location.search);
+                const boardId = params.get("board");
+                const boardNames = {
+                    1: "📄 공지사항",
+                    2: "💬 소통게시판",
+                    4: "📝 게시판",
+                    5: "🔔 공지사항",
+                    6: "🗣️ 소통하기"
+                };
+
+                if (boardTitle && boardId) {
+                    const parsedBoardId = parseInt(boardId);
+                    boardTitle.textContent = boardNames[parsedBoardId] || "게시판";
+                }
+
+
             const posts = document.querySelectorAll('.card');
 
             posts.forEach(post => {
@@ -96,6 +114,19 @@
 
                 if (content && content.innerHTML.includes('<img')) {
                     star.style.display = 'inline';
+                }
+
+            });
+
+            const crewMenuToggle = document.getElementById("crewMenuToggle");
+            const crewSubmenu = document.getElementById("crewSubmenu");
+
+            crewMenuToggle.addEventListener("click", function(event) {
+                event.preventDefault();
+                if (crewSubmenu.style.display === "none" || crewSubmenu.style.display === "") {
+                    crewSubmenu.style.display = "block";
+                } else {
+                    crewSubmenu.style.display = "none";
                 }
             });
         });

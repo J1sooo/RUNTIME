@@ -38,7 +38,8 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/post",
-                                "/api/board/**"// 나중에 등급별 생기면 삭제
+                                "/api/board/**",
+                                "/crew"// 나중에 등급별 생기면 삭제
 
                         ).permitAll()
                         .requestMatchers("/post").access((authentication, context) -> {

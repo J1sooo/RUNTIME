@@ -1,20 +1,55 @@
 <div th:fragment="sidebarFragment">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <div class="col-md-3 pt-4" style="white-space: nowrap;">
-        <a href="/index" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
-            <span class="mr-2" style="font-size: 1.2rem;">🏠</span>
-            <span>홈</span>
-        </a>
-        <a href="/post?board=1" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
-            <span class="mr-2" style="font-size: 1.2rem;">📄</span>
-            <span>공지사항</span>
-        </a>
-        <a href="/post?board=2" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
-            <span class="mr-2" style="font-size: 1.2rem;">💬</span>
-            <span>소통게시판</span>
-        </a>
-        <a href="/post?board=3" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
-            <span class="mr-2" style="font-size: 1.2rem;">🤝</span>
-            <span>크루게시판</span>
-        </a>
+        <ul class="nav flex-column">
+            <!-- 홈 -->
+            <li>
+                <a href="/index" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
+                    <span class="mr-2" style="font-size: 1.2rem;">🏠</span>
+                    <span>홈</span>
+                </a>
+            </li>
+
+            <!-- 공지사항 -->
+            <li>
+                <a href="/post?board=1" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
+                    <span class="mr-2" style="font-size: 1.2rem;">📄</span>
+                    <span>공지사항</span>
+                </a>
+            </li>
+
+            <!-- 소통게시판 -->
+            <li>
+                <a href="/post?board=2" class="nav-link text-dark d-flex align-items-center pl-3 py-2">
+                    <span class="mr-2" style="font-size: 1.2rem;">💬</span>
+                    <span>소통게시판</span>
+                </a>
+            </li>
+
+            <!-- 크루 드롭다운 메뉴 -->
+            <li class="nav-item" style="margin-bottom: 8px;">
+                <a href="#" id="crewMenuToggle" class="nav-link text-dark d-flex align-items-center pl-3 py-2" style="position: relative;">
+                    <span class="mr-2" style="font-size: 1.2rem;">🧑‍🤝‍🧑</span>
+                    <span>크루</span>
+                    <span class="ml-auto">▼</span>
+                </a>
+                <ul id="crewSubmenu" class="submenu pl-4" style="display: block; list-style-type: none;">
+                    <li style="margin-bottom: 8px;">
+                        <a href="/post?board=3" class="nav-link text-dark py-1 d-block" style="font-size: 14px;">ㄴ🏠홈</a>
+                    </li>
+                    <li style="margin-bottom: 8px;">
+                        <a href="/post?board=4" class="nav-link text-dark py-1 d-block" style="font-size: 14px;">ㄴ📝게시판</a>
+                    </li>
+                    <li style="margin-bottom: 8px;">
+                        <a href="/post?board=5" class="nav-link text-dark py-1 d-block" style="font-size: 14px;">ㄴ🔔공지사항</a>
+                    </li>
+                    <li style="margin-bottom: 8px;">
+                        <a href="/post?board=6" class="nav-link text-dark py-1 d-block" style="font-size: 14px;">ㄴ🗣️소통하기</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </div>
+
+

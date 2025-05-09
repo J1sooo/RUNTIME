@@ -1,0 +1,16 @@
+
+.nav-link {
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: #f1f1f1;
+    color: #444 !important;
+    border-radius: 4px;
+}
+
+.nav-link:active {
+    transform: translateY(1px);
+    background-color: #e0e0e0;
+    color: #333 !important;
+}
