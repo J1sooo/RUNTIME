@@ -39,8 +39,9 @@ public class MemberPageController {
     @PostMapping("/member/save")
     public String pageSave(@ModelAttribute MemberDTO memberDTO) {
         memberService.save(memberDTO);
-        return "login";  // 가입 후 로그인 페이지로 이동
+        return "saveSuccess"; // save-success.html
     }
+
     // GET: 마이페이지 폼 띄우기
     @GetMapping("/mypage")
     public String displayMyPage(Model model, Principal principal) {
