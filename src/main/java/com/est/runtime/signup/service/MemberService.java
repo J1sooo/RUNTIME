@@ -92,7 +92,7 @@ public class MemberService implements UserDetailsService {
             return;
         }
         AccessAuthority a = accessAuthorityRepository.save(
-                AccessAuthority.builder().name(authorityName).displayName(description).build());
+                AccessAuthority.builder().name(authorityName).description(description).build());
         authorityForLevelRepository.save(AuthorityForLevel.builder().authority(a).userLevel(l).build());
     }
 
