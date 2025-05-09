@@ -1,6 +1,6 @@
 package com.est.runtime.signup.service;
 
-import com.est.runtime.post.PostLikeRepository;
+import com.est.runtime.post.like.PostLikeRepository;
 import com.est.runtime.signup.dto.*;
 import com.est.runtime.signup.entity.*;
 import com.est.runtime.signup.repository.*;

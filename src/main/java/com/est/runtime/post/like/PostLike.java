@@ -1,5 +1,6 @@
-package com.est.runtime.post;
+package com.est.runtime.post.like;
 
+import com.est.runtime.post.Post;
 import com.est.runtime.signup.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.est.runtime.post;
+package com.est.runtime.post.like;
 
 import com.est.runtime.signup.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

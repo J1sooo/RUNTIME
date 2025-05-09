@@ -1,8 +1,8 @@
-package com.est.runtime.post;
+package com.est.runtime.post.like;
 
 import com.est.runtime.post.Post;
 import com.est.runtime.post.PostRepository;
-import com.est.runtime.post.dto.LikeResponseDTO;
+import com.est.runtime.post.like.dto.LikeResponseDTO;
 import com.est.runtime.signup.entity.Member;
 import com.est.runtime.signup.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
