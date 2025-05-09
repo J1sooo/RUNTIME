@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class NoteViewController {
     }
 
     @GetMapping("/note/new")
-    public String getNotes(Model model) {
+    public String postNote(Model model, @RequestParam Long id) {
+        model.addAttribute("id", id);
         model.addAttribute("note", new RequestNote());
         return "newNote";
     }
