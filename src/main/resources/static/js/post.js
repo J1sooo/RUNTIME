@@ -112,8 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const deleteBtn = document.getElementById("deletePostBtn");
 
-    if (!deleteBtn) return console.error("삭제 버튼을 찾지 못했습니다.");
-
     deleteBtn.addEventListener("click", () => {
         const postId = deleteBtn.dataset.postId;
 
