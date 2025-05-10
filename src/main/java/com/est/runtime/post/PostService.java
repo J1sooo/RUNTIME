@@ -1,6 +1,7 @@
 package com.est.runtime.post;
 
 import com.est.runtime.board.Board;
+import com.est.runtime.board.BoardRepository;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.s3.ImgUploadService;
@@ -21,6 +22,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final ImgUploadService imgUploadService;
+    private final BoardRepository boardRepository;
 
     public Page<Post> findPosts(Pageable pageable) {
         Pageable sortedByCreatedAtDesc = PageRequest.of(
@@ -65,6 +67,15 @@ public class PostService {
             imgUploadService.uploadFiles(files, post);
         }
         post.update(request.getTitle(), request.getContent());
+
+        Long boardId = request.getBoardId();
+        if (boardId != null) {
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
+
+            post.setBoard(board);
+        }
+
         return post;
     }
 

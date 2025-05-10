@@ -77,12 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // JSON으로 포장하여 append
         formData.append("post", new Blob([JSON.stringify({
             title: titleInput.value,
-            content: contentInput.value
+            content: contentInput.value,
+            boardId: Number(boardId)
         })], { type: "application/json" }));
 
         Array.from(filesInput.files).forEach(file => formData.append("files", file));
-
-
 
         const url = method === "POST"
             ? `/api/board/${boardId}/post`
@@ -97,8 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then(() => {
-                alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
                 const boardId = document.querySelector("input[name='boardId']").value;
+                alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
                 if (boardId === "3") {
                     location.href = `/post?board=3`;
                 } else {
