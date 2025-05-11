@@ -83,5 +83,4 @@ public class PostService {
         // 해당 게시판 ID로 게시글을 조회하는 로직을 작성합니다.
         return postRepository.findByBoardId(boardId, pageable);
     }
-
 }

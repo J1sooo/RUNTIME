@@ -55,7 +55,7 @@
         }
 
         .icon-button:hover {
-            background-color: lightgray; /* 밝은 회색 hover 효과 */
+            background-color: lightgray;
             border-radius: 4px;
         }
 
@@ -70,7 +70,7 @@
         }
 
         .custom-orange-btn:hover {
-            background-color: #e65100; /* 조금 더 진한 오렌지 */
+            background-color: #e65100;
             color: white;
         }
 
@@ -280,7 +280,7 @@
                     if (boardId == 3) {
                         window.location.href = "/post?board=3";
                     } else {
-                        window.location.href = "/post";
+                        window.location.href = `/post?board=${boardId}`;
                     }
                 });
             }
