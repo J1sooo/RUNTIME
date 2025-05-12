@@ -37,4 +37,11 @@ public class NoteViewController {
         model.addAttribute("note", new RequestNote());
         return "newNote";
     }
+
+    @GetMapping("/note/{id}")
+    public String noteDetail(@PathVariable Long id, Model model, @RequestParam String type) {
+        model.addAttribute("type", type);
+        model.addAttribute("note", noteService.findById(id));
+        return "noteDetail";
+    }
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>쪽지 상세</title>
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="row mt-0">
+        <div th:replace="~{fragments/sidebar :: sidebarFragment}"></div>
+        <div class="col-md-9 pt-4">
+            <div class="d-flex justify-content-between mb-3">
+                <a th:href="@{/notes}">뒤로가기</a>
+                <a th:href="@{/note/new(id=${type == 'received' ? note.sender.nickname : note.receiver.nickname})}" type="button" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">답장하기</a>
+            </div>
+            <h4 class="mb-4">쪽지 상세</h4>
+            <div class="mb-3">
+                <strong>내용:</strong>
+                <p th:text="${note.message}">쪽지 내용</p>
+            </div>
+            <div class="mb-3">
+                <strong th:text="${type == 'received' ? '보낸 사람: ' : '받은 사람: '}"></strong>
+                <span th:text="${type == 'received' ? note.sender.nickname : note.receiver.nickname}">닉네임</span>
+            </div>
+            <div>
+                <strong>보낸 시간:</strong>
+                <span th:text="${#temporals.format(note.sentAt, 'yyyy-MM-dd HH:mm')}">2025-05-09 15:00</span>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

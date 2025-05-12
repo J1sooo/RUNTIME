@@ -30,11 +30,19 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tbody>
                     <tr th:each="note : ${notes}">
-                        <td th:text="${note.message}">쪽지 내용</td>
-                        <td th:text="${type == 'received' ? note.sender.nickname : note.receiver.nickname}">닉네임</td>
-                        <td th:text="${#temporals.format(note.sentAt, 'yyyy-MM-dd HH:mm')}">보낸 시간</td>
+                        <td colspan="3" class="p-0">
+                            <a th:href="@{'/note/' + ${note.id} + '?type=' + ${type}}"
+                               class="d-flex justify-content-between align-items-center text-decoration-none text-dark px-3 py-2 border-bottom">
+                                <span th:text="${note.message}">쪽지 내용</span>
+                                <span th:text="${type == 'received' ? note.sender.nickname : note.receiver.nickname}">닉네임</span>
+                                <span th:text="${#temporals.format(note.sentAt, 'yyyy-MM-dd HH:mm')}">보낸 시간</span>
+                            </a>
+                        </td>
                     </tr>
+                    </tbody>
+
                     </tbody>
                 </table>
             </div>
