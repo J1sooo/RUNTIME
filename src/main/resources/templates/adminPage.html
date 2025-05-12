@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 관리</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+            </div>
+
+            <!-- Main content -->
+            <div class="col-md-9">
+                <h2>회원 목록</h2>
+
+                <!-- 검색 폼 -->
+                <form id="search-form" class="form-inline mb-3">
+                    <input type="text" id="search-id" class="form-control mr-2" placeholder="ID">
+                    <input type="text" id="search-username" class="form-control mr-2" placeholder="이메일">
+                    <input type="text" id="search-nickname" class="form-control mr-2" placeholder="닉네임">
+                    <button type="submit" class="btn btn-primary">검색</button>
+                </form>
+
+                <!-- 회원 테이블 -->
+                <table class="table table-bordered table-striped" id="member-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>닉네임</th>
+                        <th>이메일</th>
+                        <th>현재 등급</th>
+                        <th>변경</th>
+                    </tr>
+                    </thead>
+                    <tbody id="member-body">
+                    <!-- JS로 동적 렌더링 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin-members.js" defer></script>
+</section>
+</body>
+</html>
