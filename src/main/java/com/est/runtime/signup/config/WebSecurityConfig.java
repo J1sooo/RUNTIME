@@ -28,6 +28,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/index",
+                                "/login",
                                 "/login?error",
                                 "/member/save",
                                 "/api/member/login-status",
@@ -45,6 +46,9 @@ public class WebSecurityConfig {
                         .requestMatchers("/post").access((authentication, context) -> {
                             if (context instanceof RequestAuthorizationContext cx) {
                                 for (GrantedAuthority ga : authentication.get().getAuthorities()) {
+                                    if (ga.getAuthority().equalsIgnoreCase("RUNTIME_ADMIN")) {
+                                        return new AuthorizationDecision(true);
+                                    }
                                     if (ga.getAuthority().equalsIgnoreCase(cx.getRequest().getMethod() + "_BOARD_" + cx.getRequest().getParameter("board"))) {
                                         return new AuthorizationDecision(true);
                                     }
@@ -58,7 +62,6 @@ public class WebSecurityConfig {
                         .loginPage("/login")
                         .successHandler(loginSuccessHandler)
                         .failureHandler(loginFailureHandler)
-                        .permitAll()
                 )
                 .logout(auth -> auth
                         .logoutSuccessUrl("/login")

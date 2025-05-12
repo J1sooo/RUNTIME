@@ -52,6 +52,8 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    private boolean isAdmin = false;
+
 
     @ManyToOne
     @JoinColumn(name = "user_level")
@@ -85,6 +87,9 @@ public class Member implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<SimpleGrantedAuthority> hs = new HashSet<>();
+        if (isAdmin) {
+            hs.add(new SimpleGrantedAuthority("RUNTIME_ADMIN"));
+        }
         level.getAuthorities().forEach(x -> hs.add(new SimpleGrantedAuthority(x.getAuthority().getName())));
         return Collections.unmodifiableSet(hs);
     }

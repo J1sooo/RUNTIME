@@ -1,6 +1,5 @@
-package com.est.runtime.signup.entity;
+package com.est.runtime.admin.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,16 +11,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AccessAuthority {
-    @Id
+@Builder
+@Getter
+public class PendingAdminAuthorityRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
-    @Getter
-    @Column(unique = true)
-    private String name;
-    private String description;
+    private Long memberId;
+    private String challenge;
+    private Long requestTime;
 }
