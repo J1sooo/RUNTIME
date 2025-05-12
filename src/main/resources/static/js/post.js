@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const boardId = document.querySelector("input[name='boardId']").value;
 
-        if (boardId === "3" && !htmlContent.includes('<img ')) {
+        if (boardId === "4" && !htmlContent.includes('<img ')) {
             alert("게시글을 등록하려면 이미지를 첨부해야 합니다.");
             return; // 이미지가 첨부되지 않았으면 제출을 중단
         }

@@ -45,7 +45,7 @@ public class PostViewController {
         model.addAttribute("totalPages", postPage.getTotalPages());
         model.addAttribute("boardId", board);
 
-        if (board == 3L) {
+        if (board == 4L) {
             return "crew";
         }
 
