@@ -16,9 +16,10 @@
                 <button id="noteBtn" type="button" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">쪽지 보내기</button>
             </div>
 
+            <p class="mb-1">받는 유저의 ID</p>
+            <input type="text" id="receiver" class="form-control mb-3" th:value="${id}" placeholder="받는 유저의 id를 입력하세요" />
 
-            <input type="text" id="receiver" class="form-control mb-3" placeholder="받는 유저의 id를 입력하세요" />
-
+            <p class="mb-1">쪽지 내용</p>
             <textarea id="message" class="form-control mb-5" rows="14" placeholder="내용을 입력하세요"></textarea>
         </div>
     </div>

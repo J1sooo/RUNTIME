@@ -3,6 +3,7 @@ package com.est.runtime.post;
 import com.est.runtime.comment.Comment;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.post.img.Image;
+import com.est.runtime.post.like.PostLike;
 import com.est.runtime.signup.entity.Member;
 import jakarta.persistence.*;
 import lombok.Builder;

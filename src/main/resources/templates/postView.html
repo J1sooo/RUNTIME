@@ -80,7 +80,7 @@
 <section layout:fragment="main">
     <div class="row mt-0">
         <!-- 사이드바 -->
-        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+        <div th:replace="~{fragments/sidebar :: sidebarFragment}"></div>
 
         <!-- 본문 -->
         <div class="col-md-9 pt-4 bg-white">
@@ -96,7 +96,13 @@
             <div class="container my-5 col-lg-12 ml-2 mr-4">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText"></span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText"></span>
+                            <a th:href="@{/note/new(id=${post.author.username})}" th:if="${post.author.id != loggedInUserId}"
+                                   class="btn btn-outline-secondary btn-sm text-end me-3 ml-2 mail-icon-btn" title="쪽지 보내기">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                        </div>
                         <label for="postTitleInput" class="d-none">게시글 제목</label>
                         <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
                         <p class="my-0 mt-2 mb-0"><small th:text="${post.author.nickname}" style="font-size: 0.85em; color: gray;" class="pr-0">닉네임(등급 2)</small>
@@ -151,6 +157,7 @@
                             </div>
                                 <!-- 수정 및 삭제 버튼을 오른쪽 끝에 배치 -->
                                 <div class="ms-auto">
+                                    <a class="btn btn-sm icon-button me-1" th:href="@{/note/new(id=${comment.author.username})}"  th:if="${comment.author.id != loggedInUserId}">✉️</a>
                                     <button class="icon-button editCommentBtn me-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✏️</button>
                                     <button class="icon-button deleteCommentBtn" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId or isowner}">❌</button>
                                     <button class="icon-button saveEditBtn d-none mt-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✅</button>
@@ -181,6 +188,7 @@
                                             </span>
                                         </div>
                                         <div class="ms-auto">
+                                            <a class="btn btn-sm icon-button me-1" th:href="@{/note/new(id=${reply.author.username})}" th:if="${reply.author.id != loggedInUserId}">✉️</a>
                                             <button class="btn btn-sm icon-button editReplyBtn me-1"
                                                     th:attr="data-reply-id=${reply.commentId}" th:if="${reply.author.id == loggedInUserId}">✏️</button>
                                             <button class="btn btn-sm icon-button deleteReplyBtn"

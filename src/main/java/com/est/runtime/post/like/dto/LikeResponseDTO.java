@@ -1,4 +1,4 @@
-package com.est.runtime.post.dto;
+package com.est.runtime.post.like.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

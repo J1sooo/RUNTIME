@@ -1,6 +1,6 @@
-package com.est.runtime.post;
+package com.est.runtime.post.like;
 
-import com.est.runtime.post.dto.LikeResponseDTO;
+import com.est.runtime.post.like.dto.LikeResponseDTO;
 import com.est.runtime.signup.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

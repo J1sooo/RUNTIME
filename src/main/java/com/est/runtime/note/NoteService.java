@@ -54,4 +54,9 @@ public class NoteService {
             note.readNote();
         }
     }
+
+    public Note findById(Long id) {
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Note not found"));
+    }
 }

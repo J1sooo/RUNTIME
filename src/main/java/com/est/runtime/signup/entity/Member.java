@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.est.runtime.comment.Comment;
 import com.est.runtime.post.Post;
-import com.est.runtime.post.PostLike;
+import com.est.runtime.post.like.PostLike;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
