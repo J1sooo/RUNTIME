@@ -69,17 +69,32 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
+            <div th:if="${posts == null or posts.isEmpty()}" class="text-center mt-5">
+                <p>검색 결과가 없습니다.</p>
+                <a th:href="@{/post(board=${boardId})}" class="btn btn-secondary btn-sm mt-2">전체보기</a>
+            </div>
+
+            <div class="d-flex justify-content-center col-md-12">
+                <form th:action="@{/posts/search-view}" method="get" class="d-flex mx-auto col-md-12 justify-content-center">
+                    <input class="form-control col-md-7 mt-4" style="font-size: 12px; height:35px;" type="search" placeholder="제목으로 검색하세요" aria-label="Search" name="keyword" th:value="${keyword}">
+                    <input type="hidden" name="board" th:value="${boardId}">
+                    <button class="btn btn-primary btn-sm mt-4 col-md-1" type="submit">검색</button>
+                </form>
+            </div>
+
+
+
+            <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
                 <nav>
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${currentPage - 1})}">이전</a>
+                            <a class="page-link" th:href="@{/posts/search-view(board=${boardId}, page=${currentPage - 1}, keyword=${keyword})}">이전</a>
                         </li>
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${i})}" th:text="${i + 1}"></a>
+                            <a class="page-link" th:href="@{/posts/search-view(board=${boardId}, page=${i}, keyword=${keyword})}" th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/post(board=${boardId}, page=${currentPage + 1})}">다음</a>
+                            <a class="page-link" th:href="@{/posts/search-view(board=${boardId}, page=${currentPage + 1}, keyword=${keyword})}">다음</a>
                         </li>
                     </ul>
                 </nav>

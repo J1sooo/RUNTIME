@@ -12,7 +12,7 @@
         <div class="col-md-9 pt-4">
             <div class="d-flex justify-content-between mb-3">
                 <a th:href="@{/notes}">뒤로가기</a>
-                <a th:href="@{/note/new(id=${type == 'received' ? note.sender.nickname : note.receiver.nickname})}" type="button" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">답장하기</a>
+                <a th:href="@{/note/new(id=${type == 'received' ? note.sender.username : note.receiver.username})}" type="button" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">답장하기</a>
             </div>
             <h4 class="mb-4">쪽지 상세</h4>
             <div class="mb-3">
