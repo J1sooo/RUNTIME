@@ -3,9 +3,11 @@ package com.est.runtime.admin.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.est.runtime.admin.dto.request.AdminAddAuthorityForLevelRequest;
+import com.est.runtime.admin.dto.request.AdminAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateUserLevelRequest;
 import com.est.runtime.admin.dto.request.AdminUpdateMemberLevelRequest;
+import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCheckResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateUserLevelResponse;
@@ -53,6 +55,11 @@ public class AdminController {
         return ResponseEntity.status(res.getResponseCode()).body(res);
     }
 
+    @PostMapping("/api/admin/request-admin")
+    public ResponseEntity<AdminAuthorityResponse> requestAdmin(@RequestBody AdminAuthorityRequest request) {
+        AdminAuthorityResponse res = adminService.handleAuthorityRequest(request);
+        return ResponseEntity.status(res.getResponseCode()).body(res);
+    }
 
     @PostMapping("/api/admin/create-authority")
     public ResponseEntity<AdminCreateAuthorityResponse> createAuthority(@RequestBody AdminCreateAuthorityRequest request) {

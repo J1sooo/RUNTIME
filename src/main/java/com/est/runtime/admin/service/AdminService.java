@@ -1,6 +1,9 @@
 package com.est.runtime.admin.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -10,14 +13,18 @@ import com.est.runtime.admin.dto.AuthorityInfo;
 import com.est.runtime.admin.dto.MemberInfo;
 import com.est.runtime.admin.dto.UserLevelInfo;
 import com.est.runtime.admin.dto.request.AdminAddAuthorityForLevelRequest;
+import com.est.runtime.admin.dto.request.AdminAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateUserLevelRequest;
 import com.est.runtime.admin.dto.request.AdminUpdateMemberLevelRequest;
+import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateUserLevelResponse;
 import com.est.runtime.admin.dto.response.AdminGetMembersResponse;
 import com.est.runtime.admin.dto.response.AdminGetUserLevelResponse;
 import com.est.runtime.admin.dto.response.AdminUpdateMemberResponse;
+import com.est.runtime.admin.entity.PendingAdminAuthorityRequest;
+import com.est.runtime.admin.repository.PendingAdminRequestRepository;
 import com.est.runtime.signup.entity.AccessAuthority;
 import com.est.runtime.signup.entity.AuthorityForLevel;
 import com.est.runtime.signup.entity.Member;
@@ -36,6 +43,7 @@ public class AdminService {
     private final UserLevelRepository userLevelRepository;
     private final AccessAuthorityRepository authorityRepository;
     private final AuthorityForLevelRepository authorityForLevelRepository;
+    private final PendingAdminRequestRepository pendingAdminRequestRepository;
 
     public AdminGetMembersResponse getAllMembers() {
         List<MemberInfo> memberList = memberRepository.findAll().
@@ -109,8 +117,54 @@ public class AdminService {
             responseCode(HttpStatus.OK).build();
     }
 
+    public int getRandom() {
+        try {
+            return SecureRandom.getInstance("NativePRNGNonBlocking").nextInt(Integer.MAX_VALUE);
+        } catch (NoSuchAlgorithmException nsae) {
+            return (int) Math.random() * 1000000;
+        }
+    }
+
+    public AdminAuthorityResponse handleAuthorityRequest(AdminAuthorityRequest request) {
+        org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger("AdminService_authorityAdd");
+        Optional<Member> memberQuery = memberRepository.findById(request.getMemberId());
+        if (memberQuery.isEmpty()) {
+            return AdminAuthorityResponse.builder().message("The member ID that you specified is invalid " + request.getMemberId()).responseCode(HttpStatus.BAD_REQUEST).build();
+        }
+        Member mem = memberQuery.get();
+        if (mem.isAdmin()) {
+            return AdminAuthorityResponse.builder().message("Your account " + mem.getUsername() + "already has the admin authority!").responseCode(HttpStatus.OK).build();
+        }
+        List<PendingAdminAuthorityRequest> allPendingRequestsForMember = pendingAdminRequestRepository.findAllByMemberId(request.getMemberId());
+        if (!request.getChallenge().isEmpty()) {
+            for (PendingAdminAuthorityRequest req: allPendingRequestsForMember.stream().filter(x -> x.getRequestTime() + 600000L > System.currentTimeMillis()).toList()) {
+                if (req.getChallenge().equalsIgnoreCase(request.getChallenge())) {
+                    mem.setAdmin(true);
+                    memberRepository.save(mem);
+                    pendingAdminRequestRepository.deleteById(req.getId());
+                    return AdminAuthorityResponse.builder().message("Admin Authority Granted For The User " + mem.getUsername() + "!").responseCode(HttpStatus.OK).build();
+                }
+            }
+        }
+        if (!allPendingRequestsForMember.isEmpty()) {
+            return AdminAuthorityResponse.builder().message("An admin authority request code was already issued for your account." +  
+                "Please respond back with the correct code. " + 
+                "If you did not respond within 10 minutes, please contact the system administrator.").responseCode(HttpStatus.FORBIDDEN).build();
+        }
+        String challenge = String.valueOf(getRandom());
+        PendingAdminAuthorityRequest r = pendingAdminRequestRepository.save(PendingAdminAuthorityRequest.builder().challenge(challenge).memberId(request.getMemberId()).requestTime(System.currentTimeMillis()).build());
+        log.info("Admin challenge string for member: " + mem.getUsername() + " is " + challenge);
+        log.info("The challenge expires on " + (r.getRequestTime() + 600000L));
+        return AdminAuthorityResponse.builder().message("Please respond to the challenge within 10 minutes!").responseCode(HttpStatus.FORBIDDEN).build();
+    }
+
     public AdminCreateAuthorityResponse createAuthority(AdminCreateAuthorityRequest request) {
-        return  authorityRepository.findByName(request.getName()).map(x -> 
+        if (request.getName().toUpperCase(Locale.ROOT).contains("ADMIN")) {
+            return AdminCreateAuthorityResponse.builder().authority(AuthorityInfo.builder().id(-1L).name("").description("").build()).
+                message("Creating ADMIN authorities is not allowed.").
+                responseCode(HttpStatus.FORBIDDEN).build();
+        }
+        return authorityRepository.findByName(request.getName()).map(x -> 
             AdminCreateAuthorityResponse.builder().
                 authority(AuthorityInfo.builder().id(x.getId()).name(x.getName()).description(x.getDescription()).build()).
                 message("An authority with the name that you specified already exists!").
