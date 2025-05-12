@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-
     const memberBody = document.getElementById("member-body");
 
     async function fetchMembers(query = "") {
@@ -30,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchMembers();
 
-
     document.getElementById("search-form").addEventListener("submit", e => {
         e.preventDefault();
         const id = document.getElementById("search-id").value.trim();
@@ -40,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const query = `?id=${id || -1}&username=${encodeURIComponent(username)}&nickname=${encodeURIComponent(nickname)}`;
         fetchMembers(query);
     });
-
 
     memberBody.addEventListener("click", async e => {
         if (e.target.classList.contains("update-btn")) {
@@ -62,4 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    document.getElementById("show-members-btn").addEventListener("click", () => {
+        document.getElementById("member-section").style.display = "block";
+        document.getElementById("post-section").style.display = "none";
+    });
+
+    document.getElementById("show-posts-btn").addEventListener("click", () => {
+        document.getElementById("member-section").style.display = "none";
+        document.getElementById("post-section").style.display = "block";
+    });
 });
