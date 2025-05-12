@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+    <link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet" />
+<meta charset="UTF-8">
+    <style>
+        .btn-light-custom {
+            font-size: 12px;
+        }
+        .btn-light-custom {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .card-body p, .card-body textarea {
+            display: block;
+            width: 100%;
+        }
+        .post-content2 {
+            width: 100%;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            display: block !important;
+        }
+        .post-content2 p {
+            display: block !important;
+            margin: 0 0 2px 0 !important;
+            line-height: 1.6 !important;
+            font-size: 14px !important;
+            color: #333 !important;
+
+        }
+
+        .toast-content {
+            width: 100%;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .post-content1 img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            vertical-align: top;
+            margin: 0;
+        }
+
+        .post-content1 {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            font-size:0;
+        }
+
+        .post-content1 p, .post-content2 p {
+            margin-bottom: 0;
+            display: block;
+        }
+
+        .post-content2 img {
+            display: none;
+        }
+
+        .thumbnail-box {
+            width: 90%;
+            min-width: 80%;
+            height: 25vh;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .thumbnail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<section layout:fragment="main">
+    <div class="row mt-0 pr-1 mr-0">
+
+        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+
+        <div class="col-md-9 pr-4 pl-4 ml-3 pt-4 mt-4 bg-white">
+            <div class="d-flex mt-3 gap-2">
+                <a href="/crew" class="btn btn-light mb-4 me-2 mr-2 btn-light-custom">홈</a>
+                <a href="/post?board=4" class="btn btn-light mb-4 me-2 mr-2 btn-light-custom">게시판</a>
+                <a href="/post?board=5" class="btn btn-light mb-4 me-2 mr-2 btn-light-custom">공지사항</a>
+                <a href="/post?board=6" class="btn btn-light mb-4 me-2 mr-2 btn-light-custom">소통하기</a>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <h6 id="boardTitle" class="text-left mb-4 mt-5 fs-6"></h6>
+
+                <h4>"Let’s run together."</h4>
+                <div class= "thumbnail-box mb-3 col-md-9 ml-2">
+                    <img src="https://cdn.pixabay.com/photo/2017/09/10/11/38/foot-race-2735267_1280.jpg" class="thumbnail-img">
+
+
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-2 mt-3 pb-0 d-flex justify-content-between align-items-center">
+                <strong>크루 정보</strong>
+                <a th:href="@{/post/new(board=3)}" class="btn btn-dark btn-sm shadow-sm">+ 글쓰기</a>
+            </div>
+            <div class="row">
+                <div th:each="post : ${posts}" class="mb-4 col-md-12 px-0 d-flex mx-2" style="height: 20vh; display: flex; flex-direction: row; align-items: stretch;">
+                <div class="d-flex col-md-12 px-0">
+                    <div class="post-content1 col-md-5 mx-0 px-0" id="leftBox" th:utext="${post.content}"></div>
+
+
+                    <div class="col-md-6 mx-auto">
+
+
+
+                        <a th:href="@{/post/{id}(id=${post.id}, board=${boardId})}"
+                           th:text="${post.title}"
+                           style="font-weight: bold; font-size: 15px;"
+                           class="card-text toast-content mb-1 text-dark text-decoration-none">
+                        </a>
+
+
+                        <div class="card-text toast-content mb-2" style="font-size: 11px; color: gray;">
+                            <span th:text="${post.author.nickname}"></span>
+                            <span th:switch="${post.author.levelNumber}">
+                                    <small th:case="1">🥉</small>
+                                    <small th:case="2">🥈</small>
+                                    <small th:case="3">🥇</small>
+                                </span>
+                        </div>
+
+
+                        <div class="post-content2" id="content-[[${post.id}]]" th:utext="${post.content}"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+
+
+            <div th:if="${totalPages > 0}" class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+
+
+                        <li class="page-item" th:if="${currentPage > 0}">
+                            <a class="page-link" th:href="@{/crew(page=${currentPage - 1}, size=5)}">이전</a>
+                        </li>
+
+
+                        <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${pageNumber == currentPage} ? ' active'">
+                            <a class="page-link" th:href="@{/crew(page=${pageNumber}, size=5)}"
+                               th:text="${pageNumber + 1}"></a>
+                        </li>
+
+
+                        <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                            <a class="page-link" th:href="@{/crew(page=${currentPage + 1}, size=5)}">다음</a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+
+            </div>
+        </div>
+        </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const crewMenuToggle = document.getElementById("crewMenuToggle");
+            const crewSubmenu = document.getElementById("crewSubmenu");
+
+            crewMenuToggle.addEventListener("click", function(event) {
+                event.preventDefault();
+                if (crewSubmenu.style.display === "none" || crewSubmenu.style.display === "") {
+                    crewSubmenu.style.display = "block";
+                } else {
+                    crewSubmenu.style.display = "none";
+                }
+            });
+        });
+    </script>
+</section>
+</html>

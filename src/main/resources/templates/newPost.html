@@ -55,18 +55,19 @@
 
         <div class="col-md-9 pt-4">
             <div class="d-flex justify-content-between">
-                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
+                <h6 id="boardTitle" class="text-left mb-4 mt-5 fs-6"></h6>
             </div>
 
             <div class="mx-auto col-lg-11">
                 <h4 class="text-center mt-5">새 글 작성</h4>
 
-                <form id="postForm" th:object="${post}" class="mt-4">
+                <form id="postForm" th:object="${post}" method="POST" enctype="multipart/form-data" class="mt-4">
+                    <input type="hidden" name="boardId" value="" />
                     <button id="submitBtn" type="submit" class="btn btn-dark btn-sm mb-3 shadow-sm float-right">+ 등록</button>
 
                     <div class="form-group">
                         <input type="text" id="title" th:field="*{title}" class="form-control"
-                               placeholder="제목을 입력하세요" name="title"/>
+                               placeholder="제목을 입력하세요" name="title" required/>
                     </div>
 
                     <div class="form-group text-left d-none">

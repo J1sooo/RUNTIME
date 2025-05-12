@@ -1,5 +1,6 @@
 package com.est.runtime.post.dto;
 
+import com.est.runtime.board.Board;
 import com.est.runtime.post.Post;
 import com.est.runtime.post.img.Image;
 import com.est.runtime.signup.dto.AuthorDTO;
@@ -22,6 +23,7 @@ public class PostResponse {
     private LocalDateTime createdAt;
     private AuthorDTO author;
     private Long likes;
+    private Long boardId;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -33,6 +35,9 @@ public class PostResponse {
         this.createdAt = post.getCreatedAt();
         this.author = new AuthorDTO(post.getMember());
         this.likes = post.getLikes();
+        if (post.getBoard() != null) {
+            this.boardId = post.getBoard().getId();
+        }
     }
 }
 

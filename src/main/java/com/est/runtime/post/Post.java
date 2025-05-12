@@ -1,5 +1,6 @@
 package com.est.runtime.post;
 
+import com.est.runtime.board.Board;
 import com.est.runtime.comment.Comment;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.post.img.Image;
@@ -46,11 +47,16 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
+
     @Builder
-    public Post(String title, String content, Member member) {
+    public Post(String title, String content, Member member, Board board) {
         this.title = title;
         this.content = content;
         this.member = member;
+        this.board = board;
     }
 
     @PrePersist

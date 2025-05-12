@@ -28,7 +28,14 @@ public class CommentController {
                                                        @RequestBody CommentRequest request,
                                                        @AuthenticationPrincipal Member member) throws IOException {
         Comment comment = commentService.saveComment(postId, request, member);
+
+        Long boardId = request.getBoardId();
+
+        String redirectUrl = "/post/" + postId + "?board=" + boardId;
+
+
         return ResponseEntity.status(HttpStatus.CREATED)
+                .header("Location", redirectUrl) // 리다이렉션 URL을 응답 헤더에 포함
                 .body(new CommentResponse(comment));
     }
 

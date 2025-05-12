@@ -31,6 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const filesInput = document.getElementById("files");
     const submitBtn = document.getElementById("submitBtn");
 
+    const boardIdFromUrl = params.get("board");
+    if (boardIdFromUrl) {
+        const boardInput = document.querySelector("input[name='boardId']");
+        if (boardInput) {
+            boardInput.value = boardIdFromUrl;
+        }
+    }
+
     if (postId) {
         // 수정 모드
         fetch(`/api/post/${postId}`)
@@ -56,17 +64,30 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("최종 HTML:", htmlContent);
 
         contentInput.value = htmlContent; // 반드시 FormData 생성 전에 반영
+
+        const boardId = document.querySelector("input[name='boardId']").value;
+
+        if (boardId === "3" && !htmlContent.includes('<img ')) {
+            alert("게시글을 등록하려면 이미지를 첨부해야 합니다.");
+            return; // 이미지가 첨부되지 않았으면 제출을 중단
+        }
+
         const formData = new FormData();
 
         // JSON으로 포장하여 append
         formData.append("post", new Blob([JSON.stringify({
             title: titleInput.value,
-            content: contentInput.value
+            content: contentInput.value,
+            boardId: Number(boardId)
         })], { type: "application/json" }));
 
         Array.from(filesInput.files).forEach(file => formData.append("files", file));
 
-        fetch(`/api/post${id ? `/${id}` : ''}`, {
+        const url = method === "POST"
+            ? `/api/board/${boardId}/post`
+            : `/api/post/${id}`;
+
+        fetch(url, {
             method,
             body: formData
         })
@@ -75,12 +96,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then(() => {
+                const boardId = document.querySelector("input[name='boardId']").value;
                 alert(method === "PUT" ? "수정이 완료되었습니다" : "등록이 완료되었습니다");
-                location.href = `/post${id ? `/${id}` : ''}`;
+                if (boardId === "3") {
+                    location.href = `/post?board=3`;
+                } else {
+                    // PUT 또는 POST 후 다른 boardId로 리디렉션
+                    if (method === "PUT") {
+                        location.href = `/post/${id}?board=${boardId}`;
+                    } else {
+                        location.href = `/post?board=${boardId}`;
+                    }
+                }
             })
             .catch(err => {
                 console.error("에러 발생:", err);
-                alert("게시글 처리에 실패했습니다");
+                alert("게시글 처리에 실패했습니다.(글자수 확인)");
             });
     }
 
@@ -115,10 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteBtn.addEventListener("click", () => {
         const postId = deleteBtn.dataset.postId;
 
+        const params = new URLSearchParams(window.location.search);
+        const boardId = params.get("board");
+
         if (confirm("정말 이 게시글을 삭제하시겠습니까?")) {
             fetch(`/api/post/${postId}`, { method: "DELETE" })
                 .then(res => res.ok ? alert("삭제되었습니다.") : alert("삭제 실패: " + res.status))
-                .then(() => window.location.href = "/post")
+                .then(() => window.location.href = `/post?board=${boardId}`)
                 .catch(err => {
                     console.error("삭제 오류:", err);
                     alert("삭제에 실패했습니다.");

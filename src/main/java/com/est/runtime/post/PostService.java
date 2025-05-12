@@ -1,5 +1,7 @@
 package com.est.runtime.post;
 
+import com.est.runtime.board.Board;
+import com.est.runtime.board.BoardRepository;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
 import com.est.runtime.s3.ImgUploadService;
@@ -20,6 +22,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final ImgUploadService imgUploadService;
+    private final BoardRepository boardRepository;
 
     public Page<Post> findPosts(Pageable pageable) {
         Pageable sortedByCreatedAtDesc = PageRequest.of(
@@ -32,8 +35,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post savePost(PostRequest request, List<MultipartFile> files, Member author) throws IOException {
-        Post post = request.toEntity(author);
+    public Post savePost(PostRequest request, List<MultipartFile> files, Member author, Board board) throws IOException {
+        Post post = request.toEntity(author, board);
         if (files != null && !files.isEmpty()) {
             imgUploadService.uploadFiles(files, post);
         }
@@ -64,7 +67,20 @@ public class PostService {
             imgUploadService.uploadFiles(files, post);
         }
         post.update(request.getTitle(), request.getContent());
+
+        Long boardId = request.getBoardId();
+        if (boardId != null) {
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
+
+            post.setBoard(board);
+        }
+
         return post;
     }
 
+    public Page<Post> findPostsByBoardId(Long boardId, Pageable pageable) {
+        // 해당 게시판 ID로 게시글을 조회하는 로직을 작성합니다.
+        return postRepository.findByBoardId(boardId, pageable);
+    }
 }

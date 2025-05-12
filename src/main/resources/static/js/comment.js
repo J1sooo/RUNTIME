@@ -12,11 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             const body = commentBody.value;
+            const boardId = document.getElementById('boardId').value;
 
             fetch(`/api/post/${postId}/comments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ body })
+                body: JSON.stringify({ body, boardId})
             })
                 .then(res => {
                     if (!res.ok) throw new Error('댓글 저장 실패');
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(() => {
                     alert("댓글이 등록되었습니다.");
-                    window.location.href = `/post/${postId}`;  // 등록 후 해당 게시글 보기로 이동
+                    window.location.href = `/post/${postId}?board=${boardId}`; // 등록 후 해당 게시글 보기로 이동
                 })
                 .catch(error => {
                     console.error("댓글 등록 오류:", error);
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const replyForm = e.target;
             const replyBody = replyForm.querySelector('.replyBody').value;
             const parentCommentId = replyForm.getAttribute('data-parent-id');
+            const boardId = document.getElementById('boardId').value;
 
             fetch(`/api/comments/${parentCommentId}/replies`, {
                 method: 'POST',
