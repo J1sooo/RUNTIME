@@ -30,12 +30,21 @@
                     </div>
                     <div class="form-group">
                         <label for="nickname">새 닉네임</label>
-                        <input type="text" id="nickname" name="newNickname" class="form-control" th:value="${member.nickname}">
+                        <input type="text" id="nickname" name="newNickname" class="form-control" th:value="${member.nickname}" maxlength="8">
+                        <small id="nickname-feedback" class="form-text mt-1"></small>
                     </div>
                     <div class="form-group">
                         <label for="new-password">새 비밀번호</label>
                         <input type="password" id="new-password" name="newPassword" class="form-control">
                     </div>
+
+                    <div class="form-group">
+                        <label for="confirm-new-password">새 비밀번호 확인</label>
+                        <input type="password" id="confirm-new-password" class="form-control" placeholder="다시 입력">
+                        <small id="password-feedback" class="form-text mt-1"></small>
+                    </div>
+
+
                     <button type="button" class="btn btn-primary mt-3" id="update-btn">정보 수정</button>
                 </form>
 
