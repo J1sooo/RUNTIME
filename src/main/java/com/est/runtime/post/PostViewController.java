@@ -98,4 +98,31 @@ public class PostViewController {
 
         return "crew";
     }
+
+    @GetMapping("/posts/search-view")
+    public String searchPostsView(@RequestParam String keyword,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam Long board,
+                                  Model model) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<PostResponse> posts;
+
+        if (board != null) {
+            // 특정 게시판 검색
+            posts = postService.searchPostsByTitle(keyword, board, pageable).map(PostResponse::new);
+        } else {
+            // 전체 게시판 검색
+            posts = postService.searchPostsByTitle(keyword, pageable).map(PostResponse::new);
+        }
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", posts.getTotalPages());
+        model.addAttribute("boardId", board);
+
+        return "postList"; // templates/post/search.html 로 연결됨
+    }
 }

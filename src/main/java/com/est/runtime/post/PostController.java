@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +90,16 @@ public class PostController {
         Page<PostResponse> response = postsPage.map(PostResponse::new);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/posts/search")
+    public Page<PostResponse> searchPosts(@RequestParam String keyword,
+                                          @RequestParam (value = "boardId", required = false) Long boardId,
+                                          @PageableDefault(size = 10) Pageable pageable) {
+        if (boardId != null) {
+            return postService.searchPostsByTitle(keyword, boardId, pageable).map(PostResponse::new);
+        } else {
+            return postService.searchPostsByTitle(keyword, pageable).map(PostResponse::new);
+        }
     }
 }
