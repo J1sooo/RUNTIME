@@ -12,4 +12,8 @@ public class MemberInfo {
     private final String nickname;
     private final String username;
     private final Integer levelNo;
+
+    public static MemberInfo emptyInstance() {
+        return MemberInfo.builder().id(-1L).levelNo(-1).nickname("").username("").build();
+    }
 }

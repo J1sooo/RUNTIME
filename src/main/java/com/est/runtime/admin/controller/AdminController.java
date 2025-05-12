@@ -11,6 +11,7 @@ import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCheckResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateUserLevelResponse;
+import com.est.runtime.admin.dto.response.AdminGetLogsResponse;
 import com.est.runtime.admin.dto.response.AdminGetMembersResponse;
 import com.est.runtime.admin.dto.response.AdminGetUserLevelResponse;
 import com.est.runtime.admin.dto.response.AdminUpdateMemberResponse;
@@ -21,6 +22,10 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +51,14 @@ public class AdminController {
             return ResponseEntity.status(res.getResponseCode()).body(res);
         }
         AdminGetMembersResponse res = adminService.getMembersContainingNicknameAndUsername(memberNickname, memberUsername);
+        return ResponseEntity.status(res.getResponseCode()).body(res);
+    }
+
+    @GetMapping("/api/admin/get-logs")
+    public ResponseEntity<AdminGetLogsResponse> getLogsForMember(@RequestParam(name = "id", required = false, defaultValue = "-1") Long memberId,
+        @RequestParam(name = "before", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime before,
+        @RequestParam(name = "after", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime after) {
+        AdminGetLogsResponse res = adminService.getUserLogs(memberId, before, after);
         return ResponseEntity.status(res.getResponseCode()).body(res);
     }
 

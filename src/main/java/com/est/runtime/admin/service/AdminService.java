@@ -2,6 +2,7 @@ package com.est.runtime.admin.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.est.runtime.admin.dto.AuthorityInfo;
+import com.est.runtime.admin.dto.LogInfo;
 import com.est.runtime.admin.dto.MemberInfo;
 import com.est.runtime.admin.dto.UserLevelInfo;
 import com.est.runtime.admin.dto.request.AdminAddAuthorityForLevelRequest;
@@ -20,6 +22,7 @@ import com.est.runtime.admin.dto.request.AdminUpdateMemberLevelRequest;
 import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateUserLevelResponse;
+import com.est.runtime.admin.dto.response.AdminGetLogsResponse;
 import com.est.runtime.admin.dto.response.AdminGetMembersResponse;
 import com.est.runtime.admin.dto.response.AdminGetUserLevelResponse;
 import com.est.runtime.admin.dto.response.AdminUpdateMemberResponse;
@@ -27,10 +30,12 @@ import com.est.runtime.admin.entity.PendingAdminAuthorityRequest;
 import com.est.runtime.admin.repository.PendingAdminRequestRepository;
 import com.est.runtime.signup.entity.AccessAuthority;
 import com.est.runtime.signup.entity.AuthorityForLevel;
+import com.est.runtime.signup.entity.LoginRequestLog;
 import com.est.runtime.signup.entity.Member;
 import com.est.runtime.signup.entity.UserLevel;
 import com.est.runtime.signup.repository.AccessAuthorityRepository;
 import com.est.runtime.signup.repository.AuthorityForLevelRepository;
+import com.est.runtime.signup.repository.LoginRequestLogRepository;
 import com.est.runtime.signup.repository.MemberRepository;
 import com.est.runtime.signup.repository.UserLevelRepository;
 
@@ -44,6 +49,7 @@ public class AdminService {
     private final AccessAuthorityRepository authorityRepository;
     private final AuthorityForLevelRepository authorityForLevelRepository;
     private final PendingAdminRequestRepository pendingAdminRequestRepository;
+    private final LoginRequestLogRepository loginRequestLogRepository;
 
     public AdminGetMembersResponse getAllMembers() {
         List<MemberInfo> memberList = memberRepository.findAll().
@@ -66,6 +72,52 @@ public class AdminService {
             id(mem.getId()).
             nickname(mem.getNickname()).
             username(mem.getUsername()).levelNo(mem.getLevel().getLevelNumber()).build())).responseCode(HttpStatus.OK).message("Member found.").build();
+    }
+
+    public AdminGetLogsResponse getUserLogs(Long memberId, LocalDateTime before, LocalDateTime after) {
+        if (memberId == -1L) {
+            return AdminGetLogsResponse.builder().member(MemberInfo.emptyInstance()).
+                currentConsecutiveFailedLoginCount(-1L).
+                currentLoginCount(-1L).
+                logs(List.of()).
+                message("Please specify a member ID").
+            responseCode(HttpStatus.BAD_REQUEST).build();
+        }
+        Optional<Member> memberQuery = memberRepository.findById(memberId);
+        if (memberQuery.isEmpty()) {
+            return AdminGetLogsResponse.builder().member(MemberInfo.emptyInstance()).
+                currentConsecutiveFailedLoginCount(-1L).
+                currentLoginCount(-1L).
+                logs(List.of()).
+                message("No member found with the ID that you specified").
+                responseCode(HttpStatus.NOT_FOUND).build();
+        }
+        List<LoginRequestLog> logQuery;
+        Member mem = memberQuery.get();
+        if (before != null && after != null) {
+            logQuery = loginRequestLogRepository.findAllByMemberAndLoginTimeBetween(mem, before, after); 
+        } else if (before != null && after == null) {
+            logQuery = loginRequestLogRepository.findAllByMemberAndLoginTimeBefore(mem, before);
+        } else if (before == null && after != null) {
+            logQuery = loginRequestLogRepository.findAllByMemberAndLoginTimeAfter(mem, after);
+        } else {
+            logQuery = loginRequestLogRepository.findAllByMember(mem);
+        }
+        MemberInfo memberInfo = MemberInfo.builder().
+            id(mem.getId()).
+            levelNo(mem.getLevel().getLevelNumber()).
+            nickname(mem.getNickname()).
+            username(mem.getUsername()).build();
+        List<LogInfo> logs = logQuery.stream().map(x -> LogInfo.builder().
+            timeStamp(x.getLoginTime()).
+            ipAddress(x.getIpAddress()).
+            userAgent(x.getUserAgent()).
+            isSuccessful(x.isSuccessful()).build()).toList();
+        return AdminGetLogsResponse.builder().member(memberInfo).logs(logs).
+            currentConsecutiveFailedLoginCount(mem.getConsecutiveFailedLoginAttempts()).
+            currentLoginCount(mem.getLoginCount()).
+            message("Logs for the member that you requested.").
+            responseCode(HttpStatus.OK).build();
     }
 
     public AdminGetMembersResponse getMembersContainingNicknameAndUsername(String nickname, String username) {
