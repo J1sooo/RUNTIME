@@ -18,31 +18,56 @@
 
             <!-- Main content -->
             <div class="col-md-9">
-                <h2>회원 목록</h2>
+                <h2>관리자 페이지</h2>
 
-                <!-- 검색 폼 -->
-                <form id="search-form" class="form-inline mb-3">
-                    <input type="text" id="search-id" class="form-control mr-2" placeholder="ID">
-                    <input type="text" id="search-username" class="form-control mr-2" placeholder="이메일">
-                    <input type="text" id="search-nickname" class="form-control mr-2" placeholder="닉네임">
-                    <button type="submit" class="btn btn-primary">검색</button>
-                </form>
+                <!-- 메뉴 버튼 -->
+                <div class="mb-3">
+                    <button id="show-members-btn" class="btn btn-outline-primary mr-2">회원 목록</button>
+                    <button id="show-posts-btn" class="btn btn-outline-secondary">게시글 목록</button>
+                </div>
 
-                <!-- 회원 테이블 -->
-                <table class="table table-bordered table-striped" id="member-table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>닉네임</th>
-                        <th>이메일</th>
-                        <th>현재 등급</th>
-                        <th>변경</th>
-                    </tr>
-                    </thead>
-                    <tbody id="member-body">
-                    <!-- JS로 동적 렌더링 -->
-                    </tbody>
-                </table>
+                <!-- 회원 목록 영역 -->
+                <div id="member-section">
+                    <!-- 검색 폼 -->
+                    <form id="search-form" class="form-inline mb-3">
+                        <input type="text" id="search-id" class="form-control mr-2" placeholder="ID">
+                        <input type="text" id="search-username" class="form-control mr-2" placeholder="이메일">
+                        <input type="text" id="search-nickname" class="form-control mr-2" placeholder="닉네임">
+                        <button type="submit" class="btn btn-primary">검색</button>
+                    </form>
+
+                    <!-- 회원 테이블 -->
+                    <table class="table table-bordered table-striped" id="member-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>닉네임</th>
+                            <th>이메일</th>
+                            <th>현재 등급</th>
+                            <th>변경</th>
+                        </tr>
+                        </thead>
+                        <tbody id="member-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 게시글 목록 영역 -->
+                <div id="post-section" style="display:none;">
+                    <!-- 게시글 테이블 -->
+                    <table class="table table-bordered table-striped" id="post-table">
+                        <thead>
+                        <tr>
+                            <th>게시글 ID</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                        </tr>
+                        </thead>
+                        <tbody id="post-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
