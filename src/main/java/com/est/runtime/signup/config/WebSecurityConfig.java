@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+
 import com.est.runtime.signup.interceptors.LoginRequestLoggingFailureHandler;
 import com.est.runtime.signup.interceptors.LoginRequestLoggingSuccessHandler;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,14 @@ import lombok.AllArgsConstructor;
 public class WebSecurityConfig {
     private final LoginRequestLoggingFailureHandler loginFailureHandler;
     private final LoginRequestLoggingSuccessHandler loginSuccessHandler;
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        AccessDeniedHandlerImpl handler = new AccessDeniedHandlerImpl();
+        handler.setErrorPage("/denied");
+        return handler;
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -69,6 +80,9 @@ public class WebSecurityConfig {
                             return new AuthorizationDecision(false);
                         })
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler())
                 )
                 .formLogin(auth -> auth
                         .loginPage("/login")
