@@ -24,6 +24,7 @@ public class PostResponse {
     private AuthorDTO author;
     private Long likes;
     private Long boardId;
+    private boolean hidden;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -38,6 +39,7 @@ public class PostResponse {
         if (post.getBoard() != null) {
             this.boardId = post.getBoard().getId();
         }
+        this.hidden = post.isHidden();
     }
 }
 

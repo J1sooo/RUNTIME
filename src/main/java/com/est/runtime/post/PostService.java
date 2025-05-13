@@ -80,8 +80,7 @@ public class PostService {
     }
 
     public Page<Post> findPostsByBoardId(Long boardId, Pageable pageable) {
-        // 해당 게시판 ID로 게시글을 조회하는 로직을 작성합니다.
-        return postRepository.findByBoardId(boardId, pageable);
+        return postRepository.findByBoardIdAndHiddenFalse(boardId, pageable);
     }
 
     public Page<Post> searchPostsByTitle(String keyword, Long boardId, Pageable pageable) {
@@ -90,14 +89,56 @@ public class PostService {
                 pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
-        return postRepository.findByBoardIdAndTitleContainingIgnoreCase(boardId, keyword, sortedByCreatedAtDesc);
+        return postRepository.findByBoardIdAndTitleContainingIgnoreCaseAndHiddenFalse(boardId, keyword, sortedByCreatedAtDesc);
     }
+
     public Page<Post> searchPostsByTitle(String keyword, Pageable pageable) {
         Pageable sortedByCreatedAtDesc = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
-        return postRepository.findByTitleContainingIgnoreCase(keyword, sortedByCreatedAtDesc);
+        return postRepository.findByTitleContainingIgnoreCaseAndHiddenFalse(keyword, sortedByCreatedAtDesc);
     }
+
+    public Page<Post> searchPostsByAuthorNickname(String nickname, Pageable pageable) {
+        Pageable sorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        return postRepository.findByMemberNicknameContainingIgnoreCaseAndHiddenFalse(nickname, sorted);
+    }
+
+    public Page<Post> searchPostsByAuthorNickname(String nickname, Long boardId, Pageable pageable) {
+        Pageable sorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        return postRepository.findByBoardIdAndMemberNicknameContainingIgnoreCaseAndHiddenFalse(boardId, nickname, sorted);
+    }
+
+    @Transactional
+    public void hidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.hide();
+    }
+
+    @Transactional
+    public void unhidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.unhide();
+    }
+
+    public boolean toggleHidden(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        post.setHidden(!post.isHidden());
+        postRepository.save(post);
+
+        return post.isHidden();
+    }
+
+
+
+
+
+
+
 }

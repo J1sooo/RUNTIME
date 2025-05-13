@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Page<Post> findByBoard(Board board, Pageable pageable);
-    Page<Post> findByBoardId(Long boardId, Pageable pageable);
-    Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
-    Page<Post> findByBoardIdAndTitleContainingIgnoreCase(Long boardId, String keyword, Pageable pageable);
+    Page<Post> findByBoardAndHiddenFalse(Board board, Pageable pageable);
+    Page<Post> findByBoardIdAndHiddenFalse(Long boardId, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCaseAndHiddenFalse(String keyword, Pageable pageable);
+    Page<Post> findByBoardIdAndTitleContainingIgnoreCaseAndHiddenFalse(Long boardId, String keyword, Pageable pageable);
+    Page<Post> findByMemberNicknameContainingIgnoreCaseAndHiddenFalse(String nickname, Pageable pageable);
+    Page<Post> findByBoardIdAndMemberNicknameContainingIgnoreCaseAndHiddenFalse(Long boardId, String nickname, Pageable pageable);
+
 }

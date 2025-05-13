@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -86,20 +88,48 @@ public class PostController {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Post> postsPage = postRepository.findByBoard(board, pageable);
+        Page<Post> postsPage = postRepository.findByBoardAndHiddenFalse(board, pageable);
         Page<PostResponse> response = postsPage.map(PostResponse::new);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/posts/search")
-    public Page<PostResponse> searchPosts(@RequestParam String keyword,
+    public Page<PostResponse> searchPosts(@RequestParam(required = false) String title,
+                                          @RequestParam(required = false) String nickname,
                                           @RequestParam (value = "boardId", required = false) Long boardId,
-                                          @PageableDefault(size = 10) Pageable pageable) {
-        if (boardId != null) {
-            return postService.searchPostsByTitle(keyword, boardId, pageable).map(PostResponse::new);
-        } else {
-            return postService.searchPostsByTitle(keyword, pageable).map(PostResponse::new);
+                                          @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+        if (title != null && !title.isEmpty()) {
+            if (boardId != null) {
+                return postService.searchPostsByTitle(title, boardId, pageable).map(PostResponse::new);
+            } else {
+                return postService.searchPostsByTitle(title, pageable).map(PostResponse::new);
+            }
         }
+
+        if (nickname != null && !nickname.isEmpty()) {
+            if (boardId != null) {
+                return postService.searchPostsByAuthorNickname(nickname, boardId, pageable).map(PostResponse::new);
+            } else {
+                return postService.searchPostsByAuthorNickname(nickname, pageable).map(PostResponse::new);
+            }
+        }
+        return postService.findPosts(pageable).map(PostResponse::new);
+    }
+
+    @PatchMapping("/api/post/{id}/hide")
+    public ResponseEntity<Map<String, Object>> toggleHidePost(@PathVariable Long id) {
+        boolean isNowHidden = postService.toggleHidden(id);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("hidden", isNowHidden);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/api/post/{id}/unhide")
+    public ResponseEntity<Void> unhidePost(@PathVariable Long id) {
+        postService.unhidePost(id);
+        return ResponseEntity.ok().build();
     }
 }

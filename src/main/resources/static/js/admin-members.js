@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setupMemberSearch();
     setupMemberUpdate();
     fetchMembers();
+    setupPostManagement();
 });
 
 // 회원 목록 조회
@@ -105,4 +106,121 @@ async function fetchMemberDetail(memberId) {
     } else {
         alert(data.message || "회원 정보를 불러오지 못했습니다.");
     }
+}
+
+
+    //게시물관리
+function setupPostManagement() {
+    const postBody = document.getElementById("post-body");
+    const searchInput = document.getElementById("post-search-input");
+    const searchBtn = document.getElementById("post-search-btn");
+    const boardFilter = document.getElementById("board-filter");
+    const postSection = document.getElementById("post-section");
+    const sortOrderClient = document.getElementById("sort-order-client");
+    const showPostsBtn = document.getElementById("show-posts-btn");
+    const memberSection = document.getElementById("member-section");
+
+    let allPosts = [];
+    let currentPosts = [];
+
+    function getBoardName(boardId) {
+        switch (boardId) {
+            case 1: return "공지사항";
+            case 2: return "소통게시판";
+            case 3: return "운동일지";
+            case 4: return "크루메인";
+            case 5: return "크루공지";
+            case 6: return "크루소통";
+            default: return "알 수 없음";
+        }
+    }
+
+    async function fetchPosts(query = "") {
+        const res = await fetch(`/api/post${query}`);
+        const data = await res.json();
+        allPosts = data.content;
+        currentPosts = [...allPosts];
+        renderPosts(currentPosts);
+    }
+
+    function renderPosts(posts) {
+        console.log("renderPosts 호출:", posts.length, "게시글");
+        postBody.innerHTML = "";
+        posts.forEach(post => {
+            console.log("렌더링:", post.id, post.title, new Date(post.createdAt).toLocaleString());
+            const boardName = getBoardName(post.boardId);
+            const tr = document.createElement("tr");
+            const createdAt = new Date(post.createdAt);
+            const formattedDate = createdAt.toLocaleDateString('ko-KR');
+            tr.innerHTML = `            
+                <td>${post.id}</td>
+                <td>${boardName}</td>
+                <td><a href="/post/${post.id}?board=${post.boardId}">${post.title}</a></td>
+                <td>${post.author.nickname}</td>
+                <td>${formattedDate}</td>
+            `;
+            postBody.appendChild(tr);
+        });
+    }
+
+    async function searchPosts() {
+        const titleKeyword = document.getElementById("post-search-input").value.trim();
+        const authorKeyword = document.getElementById("post-author-input").value.trim();
+        const boardId = document.getElementById("board-filter").value;
+
+        let query = `/posts/search?`;
+
+        if (titleKeyword) {
+            query += `title=${encodeURIComponent(titleKeyword)}&`;
+        }
+
+        if (authorKeyword) {
+            query += `nickname=${encodeURIComponent(authorKeyword)}&`;
+        }
+
+        if (boardId) {
+            query += `boardId=${boardId}`;
+        }
+
+        const res = await fetch(query);
+        const data = await res.json();
+        currentPosts = data.content;
+        renderPosts(currentPosts);
+    }
+
+    function sortPosts(order) {
+        console.log("sortPosts 호출:", order);
+        if (!order) {
+            renderPosts([...currentPosts]);
+            return;
+        }
+
+        const sortedPosts = [...currentPosts].sort((a, b) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return order === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        console.log("정렬 후:", sortedPosts.map(post => post.createdAt));
+        renderPosts(sortedPosts);
+    }
+
+    showPostsBtn.addEventListener("click", () => {
+        memberSection.style.display = "none";
+        postSection.style.display = "block";
+        fetchPosts();
+    });
+
+    searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchPosts();
+    });
+
+    if (document.getElementById("sort-order-client")) {
+        document.getElementById("sort-order-client").addEventListener("change", (event) => {
+            sortPosts(event.target.value);
+        });
+    }
+
+    fetchPosts();
 }

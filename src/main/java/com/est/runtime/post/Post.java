@@ -51,6 +51,17 @@ public class Post {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @Column(nullable = false)
+    private boolean hidden = false;
+
+    public void hide() {
+        this.hidden = true;
+    }
+
+    public void unhide() {
+        this.hidden = false;
+    }
+
     @Builder
     public Post(String title, String content, Member member, Board board) {
         this.title = title;
