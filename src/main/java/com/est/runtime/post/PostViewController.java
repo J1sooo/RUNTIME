@@ -5,6 +5,7 @@ import com.est.runtime.comment.CommentService;
 import com.est.runtime.comment.dto.CommentResponse;
 import com.est.runtime.post.dto.PostRequest;
 import com.est.runtime.post.dto.PostResponse;
+import com.est.runtime.signup.entity.Member;
 import com.est.runtime.signup.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +61,13 @@ public class PostViewController {
         PostResponse postResponse = new PostResponse(post);
 
         boolean hasImages = !post.getImages().isEmpty();
-        boolean isOwner = (post.getMember().getId() == memberService.isLoggedIn().getId());
+        boolean isAdmin = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Member mem) {
+            if (mem.isAdmin()) {
+                isAdmin = true;
+            }
+        }
+        boolean isOwner = ((post.getMember().getId() == memberService.isLoggedIn().getId()) || (isAdmin == true));
 
         Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
         Page<Comment> comments = commentService.findCommentsByPostId(id, pageable);
