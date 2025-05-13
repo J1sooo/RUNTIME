@@ -23,6 +23,5 @@ public class AccessAuthority {
     @Getter
     @Column(unique = true)
     private String name;
-    @Column(unique = true)
-    private String displayName;
+    private String description;
 }

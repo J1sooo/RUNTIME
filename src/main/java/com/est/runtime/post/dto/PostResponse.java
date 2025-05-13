@@ -1,5 +1,6 @@
 package com.est.runtime.post.dto;
 
+import com.est.runtime.board.Board;
 import com.est.runtime.post.Post;
 import com.est.runtime.post.img.Image;
 import com.est.runtime.signup.dto.AuthorDTO;
@@ -15,13 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponse {
+    private Long id;
     private String title;
     private String content;
     private List<String> imgUrls;
     private LocalDateTime createdAt;
     private AuthorDTO author;
+    private Long likes;
+    private Long boardId;
+    private boolean hidden;
 
     public PostResponse(Post post) {
+        this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.imgUrls = post.getImages().stream()
@@ -29,6 +35,11 @@ public class PostResponse {
                 .toList();
         this.createdAt = post.getCreatedAt();
         this.author = new AuthorDTO(post.getMember());
+        this.likes = post.getLikes();
+        if (post.getBoard() != null) {
+            this.boardId = post.getBoard().getId();
+        }
+        this.hidden = post.isHidden();
     }
 }
 

@@ -1,9 +1,0 @@
-### 회원가입
-POST http://localhost:8080/member/save
-Content-Type: application/json
-
-{
-  "username": "t1",
-  "password": "1557",
-  "nickname": "888484"
-}

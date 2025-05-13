@@ -30,54 +30,325 @@
             display: block;
             width: 100%;
         }
+
+        .like-button {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+
+         #commentList .list-group-item {
+             border: none;
+         }
+
+        .icon-button {
+            padding: 4px 4px;
+            font-size: 12px;
+            line-height: 1;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .icon-button:hover {
+            background-color: lightgray;
+            border-radius: 4px;
+        }
+
+        .icon-button:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .custom-orange-btn {
+            background-color: #f57c00;
+            color: white;
+            border: none;
+        }
+
+        .custom-orange-btn:hover {
+            background-color: #e65100;
+            color: white;
+        }
+
     </style>
 </head>
 
 <section layout:fragment="main">
     <div class="row mt-0">
         <!-- 사이드바 -->
-        <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+        <div th:replace="~{fragments/sidebar :: sidebarFragment}"></div>
 
         <!-- 본문 -->
         <div class="col-md-9 pt-4 bg-white">
-            <div class="d-flex justify-content-between">
-                <h6 class="text-left mb-4 mt-5 fs-6">💬소통게시판</h6>
-                <div class="text-center mt-5 mr-5">
-                    <a href="/post" class="btn btn-dark mr-4">목록</a>
+            <div class="d-flex justify-content-between ml-4">
+                <h6 id="boardTitle" class="text-left mb-4 mt-5 fs-6"></h6>
+                <div class="text-center mt-5 pt-2 mr-2">
+                    <a th:if="${isowner}"
+                       th:href="@{/post/new(id=${post.id}, board=${post.boardId})}"  class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
+                    <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
+                    <button id="hidePostBtn"
+                            th:attr="data-post-id=${post.id}"
+                            class="btn btn-dark btn-sm d-none"
+                            th:text="${post.hidden} ? '숨김 해제' : '숨기기'">
+                    </button>
+                    <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
                 </div>
             </div>
 
-            <div class="container my-5">
-                <div class="card shadow-sm mr-5">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText">게시글 제목</span>
+            <div class="container my-5 col-lg-12 ml-2 mr-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-4" th:text="${post.title}" id="postTitleText"></span>
+                            <a th:href="@{/note/new(id=${post.author.username})}" th:if="${post.author.id != loggedInUserId}"
+                                   class="btn btn-outline-secondary btn-sm text-end me-3 ml-2 mail-icon-btn" title="쪽지 보내기">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                        </div>
+                        <label for="postTitleInput" class="d-none">게시글 제목</label>
                         <input type="text" class="form-control d-none" id="postTitleInput" value="[[${post.title}]]" />
-                        <div>
-                            <a th:if="${isowner}" th:href="@{/post/new(id=${post.id})}" class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
-                            <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
-                            <button th:if="${isowner}" class="btn btn-primary btn-sm d-none" id="savePostBtn">저장</button>
+                        <p class="my-0 mt-2 mb-0"><small th:text="${post.author.nickname}" style="font-size: 0.85em; color: gray;" class="pr-0">닉네임(등급 2)</small>
+                            <span th:switch="${post.author.levelNumber}">
+                                                <small th:case="1">🥉</small>
+                                                <small th:case="2">🥈</small>
+                                                <small th:case="3">🥇</small>
+                                            </span></p>
+                        <p class="my-0"><small th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"
+                                                   style="font-size: 0.85em; color: gray;">작성일</small></p>
+                    </div>
+
+
+
+                    <div class="card-body">
+                        <div class="card-text" th:utext="${post.content}" id="postContentText"></div>
+                        <label for="postContentInput" class="d-none">본문 내용</label>
+                        <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
+
+                        <!-- 좋아요 버튼 관련-->
+                        <div class="mt-3">
+                            <button id="like-btn" class="like-button" th:data-post-id="${post.id}">👍</button>
+                            <span id="like-count" th:text="${post.likes}">0</span>
                         </div>
                     </div>
 
-                    <div class="card-body">
-                        <div class="card-text" th:utext="${post.content}" id="postContentText">본문 내용</div>
-                        <textarea class="form-control d-none" id="postContentInput">[[${post.content}]]</textarea>
-                    </div>
-
-                    <div th:if="${post.images != null and !post.images.isEmpty()}" class="mt-4">
+                    <div th:if="${post.imgUrls != null and not #lists.isEmpty(post.imgUrls)}" class="mt-4">
                         <div class="row g-3">
-                            <div class="col-md-6" th:each="image : ${post.images}">
-                                <img th:src="${image.imgUrl}" class="img-fluid rounded border" alt="Post Image">
+                            <div class="col-md-6" th:each="imgUrl : ${post.imgUrls}">
+                                <img th:src="${imgUrl}" class="img-fluid rounded border" alt="Post Image">
                             </div>
                         </div>
                     </div>
                 </div>
+                <a href="#" id="goToList" class="btn btn-dark btn-sm shadow-sm mt-4">목록</a>
             </div>
 
+            <div class="col-lg-12 ml-2 mr-4 px-0" id="postContainer" th:attr="data-post-id=${post.id}">
+                <h6 class="ml-3">댓글</h6>
+                <ul class="list-group mx-0" id="commentList" style="border: none;">
+                    <!--/* @thymesVar id="comment" type="com.est.runtime.comment.dto.CommentResponse" */-->
+                    <li class="list-group-item ml-0" th:each="comment : ${comments.content}">
+                        <div class="card px-4 mb-1" style="position: relative; border: none; border-bottom: 1px solid #dee2e6;">
+                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <small th:text="${comment.author.nickname}" class="fw-medium mr-1">닉네임</small>
+                                <span th:switch="${comment.author.levelNumber}">
+                                    <small th:case="1">🥉</small>
+                                    <small th:case="2">🥈</small>
+                                    <small th:case="3">🥇</small>
+                                </span>
+                            </div>
+                                <div class="ms-auto">
+                                    <a class="btn btn-sm icon-button me-1" th:href="@{/note/new(id=${comment.author.username})}"  th:if="${comment.author.id != loggedInUserId}">✉️</a>
+                                    <button class="icon-button editCommentBtn me-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✏️</button>
+                                    <button class="icon-button deleteCommentBtn" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId or isowner}">❌</button>
+                                    <button class="icon-button saveEditBtn d-none mt-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✅</button>
+                                </div>
+                            </div>
 
+                            <textarea class="form-control d-none" th:id="'edit-comment-body-' + ${comment.commentId}">[[${comment.body}]]</textarea>
+                            <span th:id="'comment-body-' + ${comment.commentId}" th:text="${comment.body}" style="color: dimgrey">댓글 내용</span>
+                        </div>
+
+                        <p class="mb-1">
+                            <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}" style="font-size: 0.85em; color: gray;">작성일</small>
+                            <span class="showReplyFormText" th:data-comment-id="${comment.commentId}" style="margin-left: 8px; cursor: pointer; color: #0d6efd; font-size: 0.7rem;"
+                                  onmouseover="this.style.textDecoration='underline'"
+                                  onmouseout="this.style.textDecoration='none'">대댓글쓰기</span>
+                        </p>
+
+                        <ul class="list-group replies ms-3 pr-0 pb-0">
+                            <li class="list-group-item ml-4 pb-0 pr-0 mr-0 pt-0" th:each="reply : ${comment.replies}">⤷
+                                <div class="card px-4 mb-1 mr-0 pb-0" style="position: relative; border: none; border-bottom: 1px solid #ccc;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center flex-grow-1">
+                                            <small th:text="${reply.author.nickname}" class="fw-medium mr-1">닉네임</small>
+                                            <span th:switch="${reply.author.levelNumber}">
+                                                <small th:case="1">🥉</small>
+                                                <small th:case="2">🥈</small>
+                                                <small th:case="3">🥇</small>
+                                            </span>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <a class="btn btn-sm icon-button me-1" th:href="@{/note/new(id=${reply.author.username})}" th:if="${reply.author.id != loggedInUserId}">✉️</a>
+                                            <button class="btn btn-sm icon-button editReplyBtn me-1"
+                                                    th:attr="data-reply-id=${reply.commentId}" th:if="${reply.author.id == loggedInUserId}">✏️</button>
+                                            <button class="btn btn-sm icon-button deleteReplyBtn"
+                                                    th:attr="data-reply-id=${reply.commentId}" th:if="${reply.author.id == loggedInUserId or isowner}">❌</button>
+                                            <button class="btn btn-sm icon-button saveEditReplyBtn d-none"
+                                                    th:attr="data-reply-id=${reply.commentId}" th:if="${reply.author.id == loggedInUserId}">✅</button>
+                                        </div>
+                                    </div>
+
+                                    <textarea class="form-control d-none ml-2" th:id="'edit-reply-body-' + ${reply.commentId}">[[${reply.body}]]</textarea>
+                                    <p th:id="'reply-body-' + ${reply.commentId}" th:text="${reply.body}" class="mb-0" style="color: dimgrey">대댓글 내용</p>
+                                </div>
+                                <div class="text-end">
+                                    <small th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}" style="font-size: 0.8em; color: gray;">작성일</small>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="replyFormContainer ml-4 mt-2 ms-2 d-none" th:attr="data-parent-id=${comment.commentId}">
+                            <form class="replyForm ml-3" th:attr="data-parent-id=${comment.commentId}">
+                                <div class="mb-1">
+                                    <textarea class="form-control replyBody" rows="1" style="font-size: 0.8em;" placeholder="답글을 작성해주세요..." required></textarea>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="submit" class="btn btn-sm shadow mr-1 custom-orange-btn">등록</button>
+                                    <button type="button" class="btn btn-sm btn-secondary cancelReplyBtn" th:attr="data-parent-id=${comment.commentId}">취소</button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+
+                <form id="commentForm" class="col-lg-12 ml-0 mr-5 mt-2">
+
+                    <input type="hidden" id="boardId" name="boardId" th:value="${board.id}" />
+
+                    <div class="mb-3 mx-0 mr-1">
+                        <textarea class="form-control" id="commentBody" name="body" rows="1" style="font-size: 0.8em;" placeholder="댓글을 작성해주세요..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm shadow custom-orange-btn">댓글등록</button>
+                </form>
+            </div>
         </div>
     </div>
 
+    <script src="/js/like.js"></script>
+                <!-- 페이지네이션 버튼 -->
+                <div class="mt-3 d-flex justify-content-between">
+                    <a th:if="${comments.hasPrevious()}"
+                       th:href="@{/post/{id}(id=${post.id}, page=${comments.number - 1})}"
+                       class="btn btn-outline-primary btn-sm">이전</a>
+
+                    <a th:if="${comments.hasNext()}"
+                       th:href="@{/post/{id}(id=${post.id}, page=${comments.number + 1})}"
+                       class="btn btn-outline-primary btn-sm ml-auto">다음</a>
+                </div>
+            </div>
+        </div>
     <script src="/js/post.js"></script>
+    <script src="/js/comment.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 게시판 제목 설정
+            const boardTitle = document.querySelector("#boardTitle");
+            const params = new URLSearchParams(window.location.search);
+            const boardId = params.get("board");
+            const boardNames = {
+                1: "📄 공지사항",
+                2: "💬 소통게시판",
+                3: "📝 운동일지",
+                5: "🔔 공지사항",
+                6: "🗣️ 소통하기"
+            };
+
+            if (boardTitle && boardId) {
+                const parsedBoardId = parseInt(boardId);
+                boardTitle.textContent = boardNames[parsedBoardId] || "게시판";
+            }
+
+            const crewMenuToggle = document.getElementById("crewMenuToggle");
+            const crewSubmenu = document.getElementById("crewSubmenu");
+
+            crewMenuToggle.addEventListener("click", function(event) {
+                event.preventDefault();
+                if (crewSubmenu.style.display === "none" || crewSubmenu.style.display === "") {
+                    crewSubmenu.style.display = "block";
+                } else {
+                    crewSubmenu.style.display = "none";
+                }
+            });
+
+            const goToListBtn = document.getElementById("goToList");
+
+            if (goToListBtn) {
+                goToListBtn.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    if (boardId == 3) {
+                        window.location.href = "/post?board=3";
+                    } else {
+                        window.location.href = `/post?board=${boardId}`;
+                    }
+                });
+            }
+
+            fetch('/api/admin/is-admin')
+                .then(res => res.json())
+                .then(isAdmin => {
+                    if (isAdmin) {
+                        const hidePostBtn = document.getElementById('hidePostBtn');
+                        if (hidePostBtn) {
+                            hidePostBtn.classList.remove('d-none');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("관리자 여부 확인 실패:", error);
+                });
+            document.getElementById('hidePostBtn')?.addEventListener('click', function () {
+                const postId = this.getAttribute('data-post-id');
+
+                fetch(`/api/post/${postId}/hide`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("요청 실패");
+                        return response.text().then(text => text ? JSON.parse(text) : {});
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const postContainer = document.getElementById('postContainer');
+                            if (data.hidden) {
+                                alert('게시글이 숨겨졌습니다.');
+                                postContainer.style.display = 'none';
+                                this.textContent = '숨김 해제';
+                            } else {
+                                alert('게시글이 다시 표시됩니다.');
+                                postContainer.style.display = 'block';
+                                this.textContent = '숨기기';
+                            }
+                        } else {
+                            alert('처리에 실패했습니다.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error hiding/unhiding post:', error);
+                    });
+            });
+
+
+        });
+    </script>
+
+
 </section>
 </html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 관리</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="main">
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div th:replace="fragments/sidebar :: sidebarFragment"></div>
+            </div>
+
+            <!-- Main content -->
+            <div class="col-md-9">
+                <h2>관리자 페이지</h2>
+
+                <!-- 메뉴 버튼 -->
+                <div class="mb-3">
+                    <button id="show-members-btn" class="btn btn-outline-primary mr-2">회원 목록</button>
+                    <button id="show-posts-btn" class="btn btn-outline-secondary">게시글 목록</button>
+                </div>
+
+                <!-- 회원 목록 영역 -->
+                <div id="member-section" style="font-size: 13px;">
+                    <!-- 검색 폼 -->
+                    <form id="search-form" class="form-inline mb-3">
+                        <input type="text" id="search-id" class="form-control mr-2" placeholder="ID">
+                        <input type="text" id="search-username" class="form-control mr-2" placeholder="이메일">
+                        <input type="text" id="search-nickname" class="form-control mr-2" placeholder="닉네임">
+                        <button type="submit" class="btn btn-primary">검색</button>
+                    </form>
+
+                    <!-- 회원 테이블 -->
+                    <table class="table table-bordered table-striped" id="member-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>닉네임</th>
+                            <th>이메일</th>
+                            <th>현재 등급</th>
+                            <th>변경</th>
+                        </tr>
+                        </thead>
+                        <tbody id="member-body">
+                        </tbody>
+                    </table>
+
+                    <!-- 회원 상세 정보 -->
+                    <div id="member-detail" class="mt-4" style="display: none;">
+                        <h5>회원 상세 정보</h5>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr><th>이메일</th><td id="detail-username"></td></tr>
+                            <tr><th>닉네임</th><td id="detail-nickname"></td></tr>
+                            <tr><th>가입 일자</th><td id="detail-joined"></td></tr>
+                            <tr><th>최종 접속 시간</th><td id="detail-last-login"></td></tr>
+                            <tr><th>접속 횟수</th><td id="detail-login-count"></td></tr>
+                            <tr><th>User-Agent</th><td id="detail-user-agent"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 게시글 목록 영역 -->
+                <div id="post-section" style="display:none; font-size: 13px;">
+                    <div class="d-flex">
+                        <select id="board-filter" class="form-control mr-2">
+                            <option value="">전체 게시판</option>
+                            <option value="1">공지사항</option>
+                            <option value="2">소통게시판</option>
+                            <option value="3">운동일지</option>
+                            <option value="4">크루메인</option>
+                            <option value="5">공지사항</option>
+                            <option value="6">소통하기</option>
+                        </select>
+                    <input type="text" id="post-search-input" class="form-control mr-2" placeholder="제목 검색">
+                    <input type="text" id="post-author-input" class="form-control mr-2" placeholder="작성자 검색">
+
+                        <button id="post-search-btn" class="btn btn-primary">검색</button>
+                    </div>
+
+                    <select id="sort-order-client" class="form-control mr-2 mt-3">
+                        <option value="">정렬 선택</option>
+                        <option value="desc">최신순</option>
+                        <option value="asc">오래된순</option>
+
+                    </select>
+
+                    <!-- 게시글 테이블 -->
+                    <table class="table table-bordered table-striped" id="post-table">
+                        <thead>
+                        <tr>
+                            <th>게시글 ID</th>
+                            <th>게시판</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                        </tr>
+                        </thead>
+                        <tbody id="post-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="/js/admin-members.js" defer></script>
+</section>
+</body>
+</html>
