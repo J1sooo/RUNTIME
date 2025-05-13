@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ImgUploadService {
     private final S3Client s3Client;
 
-    @Value("${aws_s3_bucket}")
+    @Value("${AWS_S3_BUCKET}")
     private String bucketName;
 
     public void uploadFiles(List<MultipartFile> files, Post post) throws IOException {
