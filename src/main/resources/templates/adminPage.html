@@ -50,10 +50,24 @@
                         <tbody id="member-body">
                         </tbody>
                     </table>
+
+                    <!-- 회원 상세 정보 -->
+                    <div id="member-detail" class="mt-4" style="display: none;">
+                        <h5>회원 상세 정보</h5>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr><th>이메일</th><td id="detail-username"></td></tr>
+                            <tr><th>닉네임</th><td id="detail-nickname"></td></tr>
+                            <tr><th>가입 일자</th><td id="detail-joined"></td></tr>
+                            <tr><th>최종 접속 시간</th><td id="detail-last-login"></td></tr>
+                            <tr><th>접속 횟수</th><td id="detail-login-count"></td></tr>
+                            <tr><th>User-Agent</th><td id="detail-user-agent"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <!-- 게시글 목록 영역 -->
-                <div id="post-section" style="display:none;">
+                <div id="member-section" style="display:none; font-size: 13px;">
                     <!-- 게시글 테이블 -->
                     <table class="table table-bordered table-striped" id="post-table">
                         <thead>
