@@ -1,5 +1,6 @@
 package com.est.runtime.signup.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +11,8 @@ import com.est.runtime.comment.Comment;
 import com.est.runtime.post.Post;
 import com.est.runtime.post.like.PostLike;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Table(name = "member_table")
+@EntityListeners(AuditingEntityListener.class)
 public class Member implements UserDetails {
 
     @Id
@@ -53,6 +57,11 @@ public class Member implements UserDetails {
     private List<PostLike> postLikes = new ArrayList<>();
 
     private boolean isAdmin = false;
+
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private LocalDateTime joinDate;
 
 
     @ManyToOne

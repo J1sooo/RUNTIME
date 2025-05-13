@@ -7,6 +7,7 @@ import com.est.runtime.admin.dto.request.AdminAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateUserLevelRequest;
 import com.est.runtime.admin.dto.request.AdminUpdateMemberLevelRequest;
+import com.est.runtime.admin.dto.response.AdminAuthorityRequestListResponse;
 import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCheckResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
@@ -59,6 +60,12 @@ public class AdminController {
         @RequestParam(name = "before", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime before,
         @RequestParam(name = "after", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime after) {
         AdminGetLogsResponse res = adminService.getUserLogs(memberId, before, after);
+        return ResponseEntity.status(res.getResponseCode()).body(res);
+    }
+
+    @GetMapping("/api/admin/get-admin-requests")
+    public ResponseEntity<AdminAuthorityRequestListResponse> getAdminRequests() {
+        AdminAuthorityRequestListResponse res = adminService.getPendingAdminRequests();
         return ResponseEntity.status(res.getResponseCode()).body(res);
     }
 

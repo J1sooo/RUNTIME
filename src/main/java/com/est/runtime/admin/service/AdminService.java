@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.est.runtime.admin.dto.AuthorityInfo;
+import com.est.runtime.admin.dto.AuthorityRequestInfo;
 import com.est.runtime.admin.dto.LogInfo;
 import com.est.runtime.admin.dto.MemberInfo;
 import com.est.runtime.admin.dto.UserLevelInfo;
@@ -19,6 +20,7 @@ import com.est.runtime.admin.dto.request.AdminAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateAuthorityRequest;
 import com.est.runtime.admin.dto.request.AdminCreateUserLevelRequest;
 import com.est.runtime.admin.dto.request.AdminUpdateMemberLevelRequest;
+import com.est.runtime.admin.dto.response.AdminAuthorityRequestListResponse;
 import com.est.runtime.admin.dto.response.AdminAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateAuthorityResponse;
 import com.est.runtime.admin.dto.response.AdminCreateUserLevelResponse;
@@ -80,6 +82,7 @@ public class AdminService {
                 currentConsecutiveFailedLoginCount(-1L).
                 currentLoginCount(-1L).
                 logs(List.of()).
+                joinDate(LocalDateTime.now()).
                 message("Please specify a member ID").
             responseCode(HttpStatus.BAD_REQUEST).build();
         }
@@ -116,6 +119,7 @@ public class AdminService {
         return AdminGetLogsResponse.builder().member(memberInfo).logs(logs).
             currentConsecutiveFailedLoginCount(mem.getConsecutiveFailedLoginAttempts()).
             currentLoginCount(mem.getLoginCount()).
+            joinDate(mem.getJoinDate()).
             message("Logs for the member that you requested.").
             responseCode(HttpStatus.OK).build();
     }
@@ -177,6 +181,18 @@ public class AdminService {
         }
     }
 
+    public AdminAuthorityRequestListResponse getPendingAdminRequests() {
+        List<AuthorityRequestInfo> pendingRequests = pendingAdminRequestRepository.findAll().stream().map(x -> 
+            AuthorityRequestInfo.builder().
+                requestId(x.getId())
+                .requestMemberId(x.getMemberId())
+                .challengeCode(x.getChallenge())
+                .requestTime(x.getRequestTime()).build()).toList();
+        return AdminAuthorityRequestListResponse.builder().requests(pendingRequests)
+            .message("List of admin requests that are pending for approval. Total count is: " + pendingRequests.size())
+            .responseCode(HttpStatus.OK).build();
+    }
+
     public AdminAuthorityResponse handleAuthorityRequest(AdminAuthorityRequest request) {
         org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger("AdminService_authorityAdd");
         Optional<Member> memberQuery = memberRepository.findById(request.getMemberId());
@@ -188,8 +204,10 @@ public class AdminService {
             return AdminAuthorityResponse.builder().message("Your account " + mem.getUsername() + "already has the admin authority!").responseCode(HttpStatus.OK).build();
         }
         List<PendingAdminAuthorityRequest> allPendingRequestsForMember = pendingAdminRequestRepository.findAllByMemberId(request.getMemberId());
+        List<PendingAdminAuthorityRequest> validPendingRequests = allPendingRequestsForMember.
+            stream().filter(x -> x.getRequestTime() + 600000L > System.currentTimeMillis()).toList();
         if (!request.getChallenge().isEmpty()) {
-            for (PendingAdminAuthorityRequest req: allPendingRequestsForMember.stream().filter(x -> x.getRequestTime() + 600000L > System.currentTimeMillis()).toList()) {
+            for (PendingAdminAuthorityRequest req: validPendingRequests) {
                 if (req.getChallenge().equalsIgnoreCase(request.getChallenge())) {
                     mem.setAdmin(true);
                     memberRepository.save(mem);
@@ -198,7 +216,7 @@ public class AdminService {
                 }
             }
         }
-        if (!allPendingRequestsForMember.isEmpty()) {
+        if (!validPendingRequests.isEmpty()) {
             return AdminAuthorityResponse.builder().message("An admin authority request code was already issued for your account." +  
                 "Please respond back with the correct code. " + 
                 "If you did not respond within 10 minutes, please contact the system administrator.").responseCode(HttpStatus.FORBIDDEN).build();
