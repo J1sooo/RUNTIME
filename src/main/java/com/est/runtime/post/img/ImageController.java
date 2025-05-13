@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 public class ImageController {
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${aws_s3_bucket}")
     private String bucketName;
 
     private final S3Client s3Client;
