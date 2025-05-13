@@ -56,7 +56,7 @@ public class AdminService {
     public AdminGetMembersResponse getAllMembers() {
         List<MemberInfo> memberList = memberRepository.findAll().
             stream().
-            map(x -> MemberInfo.builder().id(x.getId()).nickname(x.getNickname()).username(x.getUsername()).levelNo(x.getLevel().getLevelNumber()).build()).
+            map(x -> MemberInfo.builder().id(x.getId()).nickname(x.getNickname()).username(x.getUsername()).levelNo(x.getLevel().getLevelNumber()).joinDate(x.getJoinDate()).build()).
             toList();
         if (memberList.isEmpty()) {
             return AdminGetMembersResponse.builder().members(memberList).responseCode(HttpStatus.NOT_FOUND).message("No members were found!").build();
@@ -73,7 +73,7 @@ public class AdminService {
         return AdminGetMembersResponse.builder().members(List.of(MemberInfo.builder().
             id(mem.getId()).
             nickname(mem.getNickname()).
-            username(mem.getUsername()).levelNo(mem.getLevel().getLevelNumber()).build())).responseCode(HttpStatus.OK).message("Member found.").build();
+            username(mem.getUsername()).joinDate(mem.getJoinDate()).levelNo(mem.getLevel().getLevelNumber()).build())).responseCode(HttpStatus.OK).message("Member found.").build();
     }
 
     public AdminGetLogsResponse getUserLogs(Long memberId, LocalDateTime before, LocalDateTime after) {
@@ -110,6 +110,7 @@ public class AdminService {
             id(mem.getId()).
             levelNo(mem.getLevel().getLevelNumber()).
             nickname(mem.getNickname()).
+            joinDate(mem.getJoinDate()).
             username(mem.getUsername()).build();
         List<LogInfo> logs = logQuery.stream().map(x -> LogInfo.builder().
             timeStamp(x.getLoginTime()).
@@ -127,7 +128,7 @@ public class AdminService {
     public AdminGetMembersResponse getMembersContainingNicknameAndUsername(String nickname, String username) {
         List<MemberInfo> memberList = memberRepository.searchMembers(nickname, username).
             stream().
-            map(x -> MemberInfo.builder().id(x.getId()).nickname(x.getNickname()).username(x.getUsername()).levelNo(x.getLevel().getLevelNumber()).build()).
+            map(x -> MemberInfo.builder().id(x.getId()).nickname(x.getNickname()).username(x.getUsername()).levelNo(x.getLevel().getLevelNumber()).joinDate(x.getJoinDate()).build()).
             toList();
         if (memberList.isEmpty()) {
             return AdminGetMembersResponse.builder().members(memberList).responseCode(HttpStatus.NOT_FOUND).message("No members were found!").build();
@@ -140,11 +141,7 @@ public class AdminService {
         Optional<UserLevel> userLevelQuery = userLevelRepository.findByLevelNumber(request.getLevelNum());
         if (memberQuery.isEmpty()) {
             return AdminUpdateMemberResponse.builder().
-                member(MemberInfo.builder().
-                    id(-1L).
-                    levelNo(-1).
-                    nickname("null").
-                    username("null").build()).
+                member(MemberInfo.emptyInstance()).
                 message("The user ID that you requested (" + request.getMemberId() + ") is invalid!").
                 responseCode(HttpStatus.NOT_FOUND).build();
         }
@@ -155,7 +152,7 @@ public class AdminService {
                     id(mem.getId()).
                     levelNo(mem.getLevel().getLevelNumber()).
                     nickname(mem.getNickname()).
-                    username(mem.getUsername()).build()).
+                    username(mem.getUsername()).joinDate(mem.getJoinDate()).build()).
                 message("The level number that you requested (" + request.getLevelNum() + ") is invalid!").
                 responseCode(HttpStatus.NOT_FOUND).build();
         }
@@ -168,7 +165,7 @@ public class AdminService {
                 id(mem.getId()).
                 levelNo(mem.getLevel().getLevelNumber()).
                 nickname(mem.getNickname()).
-                username(mem.getUsername()).build()).
+                username(mem.getUsername()).joinDate(mem.getJoinDate()).build()).
             message("Level updated").
             responseCode(HttpStatus.OK).build();
     }
