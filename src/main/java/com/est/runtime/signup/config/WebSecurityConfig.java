@@ -50,14 +50,30 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/api/board/**",
-                                "/post",
                                 "/crew"// 나중에 등급별 생기면 삭제
 
                         ).permitAll()
+                        .requestMatchers("/post").access((authentication, context) -> {
+                            if (context instanceof RequestAuthorizationContext cx) {
+                                String boardId = cx.getRequest().getParameter("board");
+                                if (boardId.equalsIgnoreCase("1") || boardId.equalsIgnoreCase("2") || boardId.equalsIgnoreCase("3")) {
+                                    return new AuthorizationDecision(true);
+                                }
+                                for (GrantedAuthority ga : authentication.get().getAuthorities()) {
+                                    if (ga.getAuthority().equalsIgnoreCase("RUNTIME_ADMIN")) {
+                                        return new AuthorizationDecision(true);
+                                    }
+                                    if (ga.getAuthority().equalsIgnoreCase(cx.getRequest().getMethod() + "_BOARD_" + cx.getRequest().getParameter("board"))) {
+                                        return new AuthorizationDecision(true);
+                                    }
+                                }
+                            }
+                            return new AuthorizationDecision(false);
+                        })
                         .requestMatchers("/api/admin/get-members",
                             "/api/admin/is-admin",
                             "/api/admin/request-admin").authenticated()
-                        .requestMatchers("/post").access((authentication, context) -> {
+                        .requestMatchers("/post/**").access((authentication, context) -> {
                             if (context instanceof RequestAuthorizationContext cx) {
                                 for (GrantedAuthority ga : authentication.get().getAuthorities()) {
                                     if (ga.getAuthority().equalsIgnoreCase("RUNTIME_ADMIN")) {

@@ -118,9 +118,6 @@ public class PostService {
     }
 
     public Page<Post> findPostsByBoardId(Long boardId, Pageable pageable) {
-    if (!isAuthorizedByBoardId(boardId, "GET")) {
-        return Page.empty();
-    }
         return postRepository.findByBoardIdAndHiddenFalse(boardId, pageable);
     }
 
