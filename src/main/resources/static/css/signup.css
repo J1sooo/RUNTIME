@@ -69,3 +69,8 @@ body {
     font-size: 48px;
     color: #90CAF9;
 }
+
+.checkmark-ban i {
+    font-size: 48px;
+    color: #85000a;
+}
