@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.error("에러 발생:", err);
-                alert("게시글 처리에 실패했습니다.(글자수 확인)");
+                alert("게시글 처리에 실패했습니다. 권한이 없거나, 글자수에 오류가 있을 수 있습니다.");
             });
     }
 
