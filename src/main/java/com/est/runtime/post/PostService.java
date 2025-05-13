@@ -28,15 +28,11 @@ public class PostService {
 
     private boolean isAuthorizedByBoardId(Long boardId, String requestType) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Member mem) {
-            if (boardId == -1L || requestType.equalsIgnoreCase("ADMIN")) {
-                if (mem.isAdmin()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
             if (mem.isAdmin()) {
                 return true;
+            }
+            if (boardId == -1L || requestType.equalsIgnoreCase("ADMIN")) {
+                return false;
             }
             String neededAuthority = new StringBuilder().append(requestType).append("_BOARD_").append(boardId).toString();
             for (GrantedAuthority ga: mem.getAuthorities()) {

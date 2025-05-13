@@ -50,6 +50,7 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/api/board/**",
+                                "/post",
                                 "/crew"// 나중에 등급별 생기면 삭제
 
                         ).permitAll()
@@ -73,6 +74,16 @@ public class WebSecurityConfig {
                             if (context instanceof RequestAuthorizationContext cx) {
                                 for (GrantedAuthority ga : authentication.get().getAuthorities()) {
                                     if (ga.getAuthority().equalsIgnoreCase("RUNTIME_ADMIN")) {
+                                        return new AuthorizationDecision(true);
+                                    }
+                                }
+                            }
+                            return new AuthorizationDecision(false);
+                        })
+                        .requestMatchers("/notes").access((authentication, context) -> {
+                            if (context instanceof RequestAuthorizationContext cx) {
+                                for (GrantedAuthority ga : authentication.get().getAuthorities()) {
+                                    if (ga.getAuthority().equalsIgnoreCase("RUNTIME_ADMIN") || ga.getAuthority().equalsIgnoreCase("ACCESS_NOTES")) {
                                         return new AuthorizationDecision(true);
                                     }
                                 }
