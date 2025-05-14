@@ -67,7 +67,7 @@ public class PostViewController {
                 isAdmin = true;
             }
         }
-        boolean isOwner = ((post.getMember().getId() == memberService.isLoggedIn().getId()) || (isAdmin == true));
+        boolean isOwner = (post.getMember().getId() == memberService.isLoggedIn().getId());
 
         Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
         Page<Comment> comments = commentService.findCommentsByPostId(id, pageable);
@@ -78,6 +78,7 @@ public class PostViewController {
         model.addAttribute("post", postResponse);
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("isowner", isOwner);
+        model.addAttribute("isadmin", isAdmin);
         model.addAttribute("comments", commentResponses);
         model.addAttribute("loggedInUserId", memberService.isLoggedIn().getId());
 
