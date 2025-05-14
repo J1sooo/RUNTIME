@@ -119,6 +119,7 @@ function setupPostManagement() {
     const sortOrderClient = document.getElementById("sort-order-client");
     const showPostsBtn = document.getElementById("show-posts-btn");
     const memberSection = document.getElementById("member-section");
+    document.getElementById("load-all-posts").addEventListener("click", fetchAllPostsPaginated);
 
     let allPosts = [];
     let currentPosts = [];
@@ -187,6 +188,34 @@ function setupPostManagement() {
         currentPosts = data.content;
         renderPosts(currentPosts);
     }
+    async function fetchAllPostsPaginated() {
+        let page = 0;
+        const size = 10;
+        let allPosts = [];
+        let hasNext = true;
+
+        while (hasNext) {
+            try {
+                const res = await fetch(`/api/post?page=${page}&size=${size}`);
+                const data = await res.json();
+
+                allPosts = allPosts.concat(data.content);
+
+                if (data.last || data.content.length === 0) {
+                    hasNext = false;
+                } else {
+                    page++;
+                }
+            } catch (error) {
+                console.error("전체 게시글 불러오기 실패:", error);
+                break;
+            }
+        }
+
+        currentPosts = allPosts;
+        renderPosts(currentPosts);
+    }
+
 
     function sortPosts(order) {
         console.log("sortPosts 호출:", order);
