@@ -89,8 +89,8 @@
                 <div class="text-center mt-5 pt-2 mr-2">
                     <a th:if="${isowner}"
                        th:href="@{/post/new(id=${post.id}, board=${post.boardId})}"  class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
-                    <button th:if="${isowner}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
-                    <button th:if="${isadmin}" id="hidePostBtn"
+                    <button th:if="${isowneroradmin}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
+                    <button th:if="${isowneroradmin}" id="hidePostBtn"
                             th:attr="data-post-id=${post.id}"
                             class="btn btn-dark btn-sm d-none"
                             th:text="${post.hidden} ? '숨김 해제' : '숨기기'">
@@ -164,7 +164,7 @@
                                 <div class="ms-auto">
                                     <a class="btn btn-sm icon-button me-1" th:href="@{/note/new(id=${comment.author.username})}"  th:if="${comment.author.id != loggedInUserId}">✉️</a>
                                     <button class="icon-button editCommentBtn me-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✏️</button>
-                                    <button class="icon-button deleteCommentBtn" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId or isowner}">❌</button>
+                                    <button class="icon-button deleteCommentBtn" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId or isowneroradmin}">❌</button>
                                     <button class="icon-button saveEditBtn d-none mt-1" th:attr="data-comment-id=${comment.commentId}" th:if="${comment.author.id == loggedInUserId}">✅</button>
                                 </div>
                             </div>
