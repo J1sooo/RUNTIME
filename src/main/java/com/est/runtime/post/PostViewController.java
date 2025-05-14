@@ -67,7 +67,7 @@ public class PostViewController {
                 isAdmin = true;
             }
         }
-        boolean isOwner = (post.getMember().getId() == memberService.isLoggedIn().getId());
+        boolean isOwner = ((post.getMember().getId() == memberService.isLoggedIn().getId()) || isAdmin);
 
         Pageable pageable = PageRequest.of(page, 10); // 10개씩 페이징
         Page<Comment> comments = commentService.findCommentsByPostId(id, pageable);
