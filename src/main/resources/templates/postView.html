@@ -90,7 +90,7 @@
                     <a th:if="${isowner}"
                        th:href="@{/post/new(id=${post.id}, board=${post.boardId})}"  class="btn btn-secondary text-white me-2 mr-1 btn-sm">수정</a>
                     <button th:if="${isowneroradmin}" class="btn btn-secondary btn-sm" id="deletePostBtn" th:attr="data-post-id=${post.id}">삭제</button>
-                    <button th:if="${isowneroradmin}" id="hidePostBtn"
+                    <button th:if="${isadmin}" id="hidePostBtn"
                             th:attr="data-post-id=${post.id}"
                             class="btn btn-dark btn-sm d-none"
                             th:text="${post.hidden} ? '숨김 해제' : '숨기기'">
