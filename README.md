@@ -15,7 +15,7 @@
 - [@jdoitja](https://github.com/jdoitja)
 
 
-## 🌐 배포 사이트
+## 🌐 배포 사이트 (서버 운영 종료)
 🔗 [http://www.est-runtime.com/index](http://www.est-runtime.com/index)
 
 
@@ -56,7 +56,10 @@
 ![ERDCloud](https://img.shields.io/badge/ERDCloud-7D7D7D?style=for-the-badge)</br>
 🔗 [ERD 바로 보기](https://www.erdcloud.com/d/N6KvohBxZGvbCeiMh)
 
-
+## ⚙️ RUNTIME 시스템 다이어그램
+<p align="center">
+  <img width="483" height="527" alt="Runtime 시스템 다이어그램" src="https://github.com/user-attachments/assets/59a37ece-65e8-4c3a-a2fe-dc871d12c2e0" />
+</p>
 
 ## 🔑 핵심 기능
 
