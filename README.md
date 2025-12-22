@@ -61,6 +61,11 @@
   <img width="483" height="527" alt="Runtime 시스템 다이어그램" src="https://github.com/user-attachments/assets/59a37ece-65e8-4c3a-a2fe-dc871d12c2e0" />
 </p>
 
+## 🔗 게시글 업로드 시퀀스 다이어그램 (S3)
+<p align="center">
+<img width="3400" height="2480" alt="runtime 게시글 업로드 (S3) 시퀀스" src="https://github.com/user-attachments/assets/0ce28ad9-fa66-4a13-a3c6-36ce93fc2dff" />
+</p>
+
 ## 🔑 핵심 기능
 
 - 게시판 CRUD (제목, 본문, 작성자 등)  
