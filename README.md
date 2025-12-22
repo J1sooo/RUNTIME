@@ -10,6 +10,7 @@
 
 
 ## 👥 팀원
+- [@J1sooo](https://github.com/J1sooo)
 - [@BanditKing](https://github.com/BanditKing)  
 - [@jameskdev](https://github.com/jameskdev)  
 - [@jdoitja](https://github.com/jdoitja)
